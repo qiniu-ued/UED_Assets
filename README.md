@@ -64,9 +64,7 @@ design-sharing/
 └── Google Material Design 3 设计分享_zhangxiaoming_2026.01.30/
     ├── README.md        （结构沉淀）
     ├── slides.pdf       （展示版）
-    └── asset/          （源文件下载链接）
-        ├── ppt/         （PPT / Keynote 源文件链接）
-        └── other/       （其他素材或源文件链接，如 Sketch、Figma）
+    └── asset.md         （存放 PPT / Keynote / Figma 源文件下载链接）
 ```
 补充：
 - 文件命名格式：如上。
