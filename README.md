@@ -69,6 +69,7 @@ design-sharing/
         └── other/       （其他素材或源文件链接，如 Sketch、Figma）
 ```
 说明：源文件需上传到 七牛云kodo design-asset 文件夹，并将链接保存到 Github asset 文件中。  
+    文件命名格式：如上。
 
 ---
 
