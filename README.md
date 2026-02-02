@@ -64,7 +64,7 @@ design-sharing/
 └── material design 3_zhangxiaoming_2026.01.30/
     ├── README.md        （结构沉淀）
     ├── slides.pdf       （展示版）
-    └── assets/          （源文件下载链接）
+    └── asset/          （源文件下载链接）
         ├── ppt/         （PPT / Keynote 源文件链接）
         └── other/       （其他素材或源文件链接，如 Sketch、Figma）
 ```
