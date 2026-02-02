@@ -88,7 +88,7 @@ design-sharing/
 
 - 首先：你需要有 PPT/keynote 等源文件、便于展示的PDF 文件、markdown 格式的文件。
 
-- 第一：将PPT/keynote 源文件上传到 七牛云 kodo（rmb-web@qiniu.com）design-asset 文件夹中，并保存链接。
+- 第一：将PPT/keynote 源文件上传到 七牛云 kodo（rmb-web@qiniu.com.密码获取：UED Team ）design-asset 文件夹中，并保存链接。
 
 - 第二：在github 中创建文件夹，上传PDF 文件，maekdown 文件，新建 asset 文件（如上）。
 
