@@ -19,7 +19,6 @@
 
 用于现场表达与阅读体验：
 
-* PPT / Keynote
 * PDF 导出版本
 
 👉 作用：保证视觉表达与阅读体验
@@ -45,7 +44,7 @@
 
 ## 三、关于 PPT / PDF 与 Markdown 的关系
 
-我们不会强行把 PPT 或 PDF 完整转成 Markdown。
+我们需要把 PPT 或 PDF 完整转成 Markdown。
 
 原则是：
 
