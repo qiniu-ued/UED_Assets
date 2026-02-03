@@ -65,6 +65,7 @@ design-sharing/
     ├── README.md        （由 slides.pdf 转写的结构化 Markdown）
     ├── slides.pdf       （展示版）
     └── asset.md         （资源链接占位）
+
 ```
 补充：
 - 文件命名格式：如上。
@@ -88,6 +89,9 @@ design-sharing/
 
 - 首先：准备便于展示的 `slides.pdf`（可由 PPT/Keynote 导出）。
 
+- 第一：将PPT/keynote 源文件上传到 七牛云 kodo（rmb-web@qiniu.com.密码获取：UED Team ）design-asset 文件夹中，并保存链接。
+
 - 第二：在 github 中创建文件夹，上传 `slides.pdf`，并由 `slides.pdf` 转写生成 `README.md`。
 
-- 注意命名规范统一，以上。
+- 注意命名的规范，统一，以上。
+
