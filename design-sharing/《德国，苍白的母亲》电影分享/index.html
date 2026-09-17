@@ -1,0 +1,903 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="color-scheme" content="dark" />
+  <title>《德国，苍白的母亲》｜电影分享</title>
+  <style>
+    :root {
+      --ink: #171716;
+      --paper: #e8e2d5;
+      --paper-2: #d8d0c1;
+      --muted: #9f9a90;
+      --red: #a62d27;
+      --red-bright: #d24a3f;
+      --line: rgba(232, 226, 213, .2);
+      --shadow: 0 24px 80px rgba(0, 0, 0, .38);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: #090909; }
+    body {
+      margin: 0;
+      color: var(--paper);
+      background:
+        radial-gradient(circle at 12% 8%, rgba(166,45,39,.14), transparent 31rem),
+        #090909;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC",
+        "Noto Sans CJK SC", "Microsoft YaHei", sans-serif;
+      overflow-x: hidden;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    a { color: #ead59c; text-underline-offset: 3px; }
+
+    .progress {
+      position: fixed; inset: 0 0 auto 0; height: 3px; z-index: 30;
+      background: rgba(255,255,255,.08);
+    }
+    .progress > i {
+      display: block; width: 7.7%; height: 100%; background: var(--red-bright);
+      transition: width .35s ease;
+    }
+
+    .deck { scroll-snap-type: y mandatory; }
+    .slide {
+      position: relative;
+      min-height: 100vh;
+      scroll-snap-align: start;
+      display: grid;
+      place-items: center;
+      padding: clamp(18px, 3vw, 42px);
+      isolation: isolate;
+    }
+    .slide::after {
+      content: ""; position: absolute; inset: 0; z-index: -1; opacity: .19;
+      background-image:
+        repeating-linear-gradient(0deg, transparent 0 3px, rgba(255,255,255,.025) 4px),
+        radial-gradient(circle at 78% 28%, rgba(255,255,255,.08), transparent 1px);
+      background-size: auto, 11px 11px;
+      pointer-events: none;
+    }
+    .frame {
+      width: min(94vw, calc(88vh * 16 / 9));
+      aspect-ratio: 16 / 9;
+      max-height: 88vh;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(232,226,213,.24);
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      padding: clamp(28px, 4.2vw, 70px);
+      display: flex;
+      flex-direction: column;
+    }
+    .frame.light { background: var(--paper); color: var(--ink); border-color: transparent; }
+    .frame.red { background: var(--red); }
+    .cover-frame { isolation:isolate; }
+    .cover-frame::before {
+      content:""; position:absolute; inset:0; z-index:1; pointer-events:none;
+      background:
+        linear-gradient(90deg, var(--ink) 0 31%, rgba(23,23,22,.94) 40%, rgba(23,23,22,.34) 68%, rgba(23,23,22,.06) 100%),
+        linear-gradient(0deg, rgba(23,23,22,.88) 0, transparent 28%);
+    }
+    .cover-image {
+      position:absolute; inset:0 0 0 37%; width:63%; height:100%; object-fit:cover; object-position:56% center;
+      filter:saturate(.78) contrast(1.05) brightness(.78);
+    }
+    .cover-copy { position:relative; z-index:2; max-width:62%; }
+    .cover-frame .meta { z-index:2; }
+    .cover-credit { margin-left:auto; margin-right:12px; color:rgba(232,226,213,.7); }
+
+    .eyebrow {
+      font-size: clamp(10px, .9vw, 14px); letter-spacing: .17em;
+      text-transform: uppercase; color: var(--red-bright); font-weight: 760;
+      margin-bottom: .8rem;
+    }
+    .light .eyebrow { color: var(--red); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      font-family: ui-serif, "Songti SC", "Noto Serif CJK SC", serif;
+      font-size: clamp(38px, 5.6vw, 92px); line-height: 1.02; letter-spacing: -.045em;
+      max-width: 12ch; margin-bottom: 1.2rem;
+    }
+    h2 {
+      font-family: ui-serif, "Songti SC", "Noto Serif CJK SC", serif;
+      font-size: clamp(30px, 4.1vw, 68px); line-height: 1.08; letter-spacing: -.04em;
+      margin-bottom: clamp(18px, 2.5vw, 38px);
+    }
+    h3 { font-size: clamp(15px, 1.45vw, 24px); line-height: 1.25; }
+    p, li { font-size: clamp(13px, 1.25vw, 21px); line-height: 1.55; }
+    .heading-with-action { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; margin-bottom:clamp(18px,2.5vw,38px); }
+    .heading-with-action h2 { margin-bottom:0; }
+    .video-entry { flex:0 0 auto; display:inline-flex; align-items:center; gap:.55rem; border:1px solid currentColor; border-radius:99px; padding:.55rem .85rem; color:var(--paper); text-decoration:none; font-size:clamp(11px,.9vw,14px); font-weight:760; letter-spacing:.03em; }
+    .video-entry::before { content:"▶"; color:var(--red-bright); }
+    .video-entry:hover { background:rgba(255,255,255,.1); }
+    .frame.red .video-entry::before { color:#fff1d7; }
+    .photo-video-entry { position:absolute; top:12px; right:12px; z-index:2; background:rgba(8,8,8,.82); }
+    .lead { font-size: clamp(17px, 1.7vw, 28px); line-height: 1.5; max-width: 35em; }
+    .muted { color: var(--muted); }
+    .light .muted { color: #69655e; }
+    .redline { width: 72px; height: 5px; background: var(--red-bright); margin: .2rem 0 1.2rem; }
+    .light .redline { background: var(--red); }
+    .quote {
+      font-family: ui-serif, "Songti SC", serif;
+      font-size: clamp(23px, 3vw, 50px); line-height: 1.28;
+      max-width: 17em; margin: auto 0;
+    }
+    .quote small {
+      display: block; font-family: inherit; font-size: .42em; color: var(--muted);
+      margin-top: 1rem; letter-spacing: .04em;
+    }
+    .closing-question { max-width:none; }
+    .closing-question > span { display:block; white-space:nowrap; }
+    .big-number {
+      font-family: ui-serif, Georgia, serif; font-size: clamp(80px, 15vw, 230px);
+      line-height: .75; color: rgba(232,226,213,.09); position: absolute; right: 4%; top: 10%;
+    }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(20px, 4vw, 64px); flex: 1; min-height: 0; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(12px, 2vw, 28px); }
+    .stack { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+    .photo-panel { position:relative; overflow:hidden; min-height:0; border:1px solid var(--line); background:#080808; }
+    .photo-panel img { width:100%; height:100%; object-fit:cover; display:block; }
+    .photo-caption { position:absolute; inset:auto 0 0 0; padding:2.4rem 1.2rem 1rem; background:linear-gradient(transparent,rgba(0,0,0,.9)); font-size:clamp(10px,.92vw,15px); color:#eee8db; }
+    .history-list { display:flex; flex-direction:column; justify-content:center; gap:.6rem; }
+    .history-item { display:grid; grid-template-columns:86px 1fr; gap:1rem; align-items:baseline; padding:.65rem 0; border-top:1px solid var(--line); }
+    .history-item strong { font:700 clamp(22px,2.3vw,38px)/1 ui-serif,Georgia,serif; color:var(--red-bright); }
+    .history-item p { margin:0; }
+    .people { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(12px,1.8vw,26px); flex:1; min-height:0; }
+    .person { display:flex; flex-direction:column; min-height:0; border:1px solid rgba(23,23,22,.22); background:#f1ecdf; }
+    .person img { width:100%; height:44%; min-height:120px; object-fit:cover; display:block; }
+    .person-copy { padding:clamp(12px,1.5vw,22px); }
+    .person-copy h3 { margin-bottom:.3rem; }
+    .person-copy p { font-size:clamp(11px,1.02vw,16px); line-height:1.45; margin:0; }
+    .role { color:var(--red); font-size:clamp(9px,.8vw,12px); letter-spacing:.12em; font-weight:800; }
+    .scene-steps { counter-reset:scene; display:flex; flex-direction:column; justify-content:center; }
+    .scene-step { counter-increment:scene; display:grid; grid-template-columns:42px 1fr; gap:12px; padding:.75rem 0; border-top:1px solid var(--line); }
+    .scene-step::before { content:counter(scene, decimal-leading-zero); color:var(--red-bright); font:700 clamp(18px,2vw,30px)/1 ui-serif,Georgia,serif; }
+    .scene-step h3 { margin:0 0 .2rem; }
+    .scene-step p { margin:0; font-size:clamp(11px,1.02vw,16px); color:var(--muted); }
+    .contrast-card { border:1px solid var(--line); padding:clamp(16px,2vw,30px); }
+    .contrast-card + .contrast-card { margin-top:12px; background:rgba(166,45,39,.13); }
+    .contrast-card h3 { display:flex; align-items:center; gap:.65rem; margin-bottom:.6rem; }
+    .contrast-card h3 span { color:var(--red-bright); font:700 1.5em/1 ui-serif,Georgia,serif; }
+    .contrast-card ul { margin:0; padding-left:1.1em; }
+    .contrast-card li { font-size:clamp(11px,1vw,16px); }
+    .fact-chain { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:rgba(255,255,255,.25); margin-top:1rem; }
+    .fact { background:var(--red); padding:clamp(12px,1.4vw,22px); }
+    .fact b { display:block; font:700 clamp(22px,2.4vw,40px)/1 ui-serif,Georgia,serif; color:#ffd7cc; margin-bottom:.55rem; }
+    .fact p { font-size:clamp(10px,.92vw,15px); margin:0; line-height:1.4; }
+    .ending-sequence { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-bottom:1.1rem; }
+    .ending-step { border-top:3px solid var(--line); padding:.75rem .5rem 0 0; }
+    .ending-step.active { border-color:var(--red-bright); }
+    .ending-step b { display:block; color:var(--red-bright); font-size:clamp(12px,1.05vw,17px); margin-bottom:.3rem; }
+    .ending-step p { font-size:clamp(10px,.9vw,14px); margin:0; line-height:1.35; }
+    .ending-slide .heading-with-action { margin-bottom:clamp(14px,1.5vw,22px); }
+    .ending-slide .ending-sequence { margin-bottom:0; }
+    .ending-analysis { flex:0 0 auto; align-items:start; gap:clamp(18px,3vw,44px); margin-top:clamp(18px,2.2vw,30px); }
+    .ending-analysis .contrast-card { min-height:clamp(130px,17vh,170px); padding:clamp(16px,1.55vw,24px); }
+    .ending-analysis .contrast-card h3 { margin-bottom:.55rem; }
+    .ending-analysis .contrast-card p { margin:0; font-size:clamp(12px,1.08vw,17px); line-height:1.45; }
+    .ending-analysis .contrast-card:first-child { margin-top:clamp(18px,2.2vw,34px); }
+    .ending-analysis .counterpoint { margin-top:clamp(18px,2.2vw,34px); }
+    .insight { border-left:4px solid var(--red-bright); padding-left:1rem; font-size:clamp(16px,1.6vw,26px); line-height:1.45; }
+    .visual-pair { display:grid; grid-template-columns:1fr 1fr; gap:10px; min-height:0; flex:1; }
+    .visual-pair .photo-panel { min-height:180px; }
+    .language-split { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .language-card { border:1px solid var(--line); padding:clamp(15px,1.8vw,28px); }
+    .language-card.emphasis { background:rgba(166,45,39,.18); border-color:rgba(210,74,63,.6); }
+    .language-card .term { display:block; color:var(--red-bright); font-size:clamp(10px,.9vw,14px); letter-spacing:.12em; font-weight:800; margin-bottom:.45rem; }
+    .language-card h3 { font-size:clamp(19px,2vw,32px); margin-bottom:.5rem; }
+    .language-card p { font-size:clamp(11px,1.02vw,16px); margin:0; }
+    .devices { display:flex; flex-wrap:wrap; gap:8px; margin-top:1rem; }
+    .device { border:1px solid var(--line); border-radius:99px; padding:.45rem .8rem; font-size:clamp(10px,.9vw,14px); color:#d8d0c1; }
+    .language-slide .language-split { margin-bottom:.15rem; }
+    .language-flow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:auto; margin-bottom:clamp(30px,4.5vh,58px); }
+    .language-step { border-top:3px solid var(--line); background:rgba(255,255,255,.025); padding:clamp(14px,1.5vw,22px); }
+    .language-step:nth-child(2) { border-color:rgba(210,74,63,.65); background:rgba(166,45,39,.12); }
+    .language-step:nth-child(3) { border-color:var(--red-bright); }
+    .language-step b { display:block; color:var(--red-bright); font-size:clamp(11px,.95vw,15px); letter-spacing:.12em; margin-bottom:.45rem; }
+    .language-step span { display:block; font-size:clamp(12px,1.05vw,17px); line-height:1.45; }
+    .still-gallery { display:grid; gap:12px; flex:1; min-height:0; }
+    .still-gallery.three { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    .still-gallery.two { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .still-gallery .photo-panel { margin:0; min-height:180px; }
+    .still-gallery .photo-panel img { object-position:center; }
+    .still-gallery .photo-panel.ruins-child img { object-position:60% center; }
+    .still-gallery .photo-panel.contain img { object-fit:contain; }
+    .still-gallery .photo-panel.text-frame img { object-fit:contain; object-position:center; transform:none; }
+    .gallery-note { margin:.9rem 0 0; color:var(--muted); font-size:clamp(11px,1vw,16px); }
+    .card {
+      border-top: 1px solid currentColor; padding-top: 1rem;
+    }
+    .card .index { color: var(--red-bright); font-size: .75em; letter-spacing: .12em; font-weight: 800; }
+    .light .card .index { color: var(--red); }
+    .card p { margin-bottom: 0; }
+
+    .meta {
+      position: absolute; left: clamp(28px, 4.2vw, 70px); right: clamp(28px, 4.2vw, 70px); bottom: 18px;
+      display: flex; justify-content: space-between; align-items: center;
+      color: var(--muted); font-size: clamp(9px, .75vw, 12px); letter-spacing: .08em;
+    }
+    .time { display:none; color: var(--paper); border: 1px solid var(--line); padding: 4px 8px; border-radius: 99px; }
+    .light .time { color: var(--ink); border-color: rgba(23,23,22,.2); }
+
+    .timeline { display: grid; grid-template-columns: repeat(6, 1fr); margin-top: auto; padding-bottom: 7%; }
+    .event { border-top: 2px solid rgba(232,226,213,.32); padding: 14px 12px 0 0; position: relative; }
+    .event::before { content:""; width: 9px; height: 9px; border-radius: 50%; background: var(--paper); position:absolute; top:-5px; left:0; }
+    .event.red-dot::before { background: var(--red-bright); }
+    .event strong { display:block; font-family: ui-serif, Georgia, serif; font-size: clamp(19px,2vw,34px); }
+    .event span { display:block; font-size: clamp(10px,.95vw,15px); color: var(--muted); margin-top:.3rem; line-height:1.35; }
+
+    .axis { display: grid; grid-template-columns: 1fr 80px 1fr; align-items: stretch; flex: 1; min-height: 0; }
+    .axis-side { padding: clamp(16px, 2.2vw, 34px); border: 1px solid var(--line); display:flex; flex-direction:column; justify-content:center; }
+    .axis-side.right { background: rgba(166,45,39,.14); }
+    .axis-center { display:grid; place-items:center; color:var(--muted); font-size:clamp(11px,1vw,16px); writing-mode: vertical-rl; letter-spacing:.16em; }
+    .axis ul { padding-left: 1.1em; margin:0; }
+    .axis li + li { margin-top:.45rem; }
+
+    .body-map { position:relative; min-height:0; display:grid; place-items:center; }
+    .face {
+      width:min(22vw,34vh); aspect-ratio: .78; border:2px solid var(--paper); border-radius: 48% 48% 44% 44%;
+      position:relative; opacity:.85;
+    }
+    .face::before, .face::after { content:""; position:absolute; top:35%; width:16%; border-top:2px solid var(--paper); }
+    .face::before { left:21%; transform:rotate(7deg); }
+    .face::after { right:21%; transform:rotate(-11deg) translateY(6px); }
+    .mouth { position:absolute; width:34%; height:9%; left:33%; top:68%; border-bottom:2px solid var(--red-bright); transform:rotate(12deg); }
+    .scar { position:absolute; inset:4% 46% 4% auto; border-left:1px dashed rgba(232,226,213,.45); transform:rotate(4deg); }
+    .label { position:absolute; font-size:clamp(10px,1vw,16px); max-width:13em; line-height:1.4; }
+    .label::after { content:""; position:absolute; top:50%; width:clamp(50px,7vw,105px); border-top:1px solid var(--red-bright); }
+    .label.a { left:0; top:26%; text-align:right; }
+    .label.a::after { left:calc(100% + 10px); }
+    .label.b { right:0; top:55%; }
+    .label.b::after { right:calc(100% + 10px); }
+
+    .door-stage { display:grid; grid-template-columns:1.15fr .85fr; flex:1; min-height:0; gap:5vw; }
+    .door {
+      align-self:center; justify-self:center; width:min(24vw,35vh); aspect-ratio:.68; border:3px solid var(--paper); position:relative;
+      background:linear-gradient(100deg, rgba(255,255,255,.02), rgba(255,255,255,.1));
+    }
+    .door::before { content:""; position:absolute; right:10%; top:52%; width:9px; height:9px; border-radius:50%; background:var(--red-bright); }
+    .door::after { content:""; position:absolute; left:8%; top:0; height:100%; border-left:1px solid rgba(255,255,255,.18); }
+    .knock { position:absolute; right:-32px; top:35%; color:var(--red-bright); font-size:clamp(22px,3vw,46px); font-weight:900; transform:rotate(90deg); }
+    .reading { border-left:1px solid var(--line); padding-left:clamp(18px,3vw,46px); display:flex; flex-direction:column; justify-content:center; }
+    .reading-item { display:grid; grid-template-columns:28px 1fr; gap:10px; margin:.7rem 0; }
+    .reading-item b { color:var(--red-bright); font-size:1.2rem; }
+
+    .visual-strip { display:grid; grid-template-columns:repeat(3, 1fr); flex:1; gap:12px; min-height:0; }
+    .visual {
+      min-height:0; position:relative; overflow:hidden; border:1px solid var(--line); padding:1.2rem;
+      display:flex; flex-direction:column; justify-content:flex-end;
+    }
+    .visual::before { content:""; position:absolute; inset:0; z-index:-1; filter:grayscale(1); opacity:.55; }
+    .visual.v1::before { background:linear-gradient(135deg,#b9b1a1 0 34%,#342e2a 34% 42%,#9f9685 42% 65%,#262421 65%); }
+    .visual.v2::before { background:repeating-linear-gradient(113deg,#d7cfbf 0 9px,#23211f 9px 14px,#6d3e39 14px 21px); }
+    .visual.v3::before { background:radial-gradient(ellipse at 50% 35%,#d6cbbb 0 16%,#24211f 17% 26%,transparent 27%), linear-gradient(#8a3b34 0 35%,#191919 35%); }
+    .visual h3 { margin-bottom:.3rem; }
+    .visual p { font-size:clamp(10px,1vw,16px); margin:0; }
+
+    .media-card {
+      border:1px solid var(--line); background:#0d0d0d; min-height:0; position:relative; overflow:hidden;
+      display:flex; flex-direction:column;
+    }
+    .media-placeholder { flex:1; display:grid; place-items:center; text-align:center; padding:1.4rem; background:linear-gradient(135deg,#1b1b1a,#0d0d0d); }
+    .media-placeholder .clapper { font-size:clamp(32px,4vw,64px); filter:grayscale(1); opacity:.6; }
+    .media-placeholder p { font-size:clamp(11px,1.05vw,17px); max-width:26em; margin:.65rem auto; color:var(--muted); }
+    .media-actions { padding:.7rem; display:flex; gap:.6rem; align-items:center; border-top:1px solid var(--line); }
+    .media-actions label, .ghost-btn {
+      cursor:pointer; border:1px solid var(--line); border-radius:99px; padding:.45rem .8rem;
+      font-size:clamp(10px,.82vw,13px); background:transparent;
+    }
+    .media-actions input { display:none; }
+    video { width:100%; height:100%; object-fit:contain; background:#000; display:none; }
+
+    .speaker-notes {
+      position:absolute; inset:auto 0 0 0; z-index:20; transform:translateY(102%);
+      background:rgba(9,9,9,.96); border-top:1px solid var(--red); padding:1rem clamp(28px,4.2vw,70px) 1.5rem;
+      color:var(--paper);
+      transition:transform .25s ease; max-height:44%; overflow:auto;
+    }
+    .speaker-notes.open { transform:translateY(0); }
+    .speaker-notes h3 { margin:0 0 .4rem; color:var(--red-bright); }
+    .speaker-notes p, .speaker-notes li { font-size:clamp(11px,.92vw,15px); line-height:1.55; }
+    .speaker-notes ul { margin:.2rem 0; }
+
+    .controls {
+      position:fixed; right:18px; bottom:18px; z-index:40; display:flex; gap:8px; align-items:center;
+      background:rgba(13,13,13,.8); backdrop-filter:blur(12px); padding:7px; border:1px solid rgba(255,255,255,.12); border-radius:99px;
+    }
+    .controls button { width:36px; height:36px; border-radius:50%; border:0; background:transparent; cursor:pointer; color:var(--paper); }
+    .controls button:hover { background:rgba(255,255,255,.12); }
+    .counter { font-size:11px; color:var(--muted); min-width:40px; text-align:center; }
+
+    .help, .sources, .clip-player {
+      position:fixed; inset:0; z-index:60; background:rgba(5,5,5,.93); display:none; place-items:center; padding:24px;
+    }
+    .help.open, .sources.open, .clip-player.open { display:grid; }
+    .panel { width:min(780px,92vw); max-height:86vh; overflow:auto; border:1px solid var(--line); background:#151514; padding:clamp(24px,4vw,48px); box-shadow:var(--shadow); }
+    .panel h2 { font-size:clamp(28px,4vw,52px); }
+    .keys { display:grid; grid-template-columns:auto 1fr; gap:12px 20px; align-items:center; }
+    kbd { border:1px solid rgba(255,255,255,.22); border-bottom-width:3px; border-radius:6px; padding:4px 8px; text-align:center; }
+    .source-list { padding-left:1.2em; }
+    .source-list li + li { margin-top:.8rem; }
+    .clip-panel { width:min(1000px,94vw); }
+    .clip-stage { aspect-ratio:16/9; background:#000; border:1px solid var(--line); display:grid; place-items:center; margin:1rem 0; overflow:hidden; }
+    .clip-stage video { display:none; width:100%; height:100%; object-fit:contain; }
+    .clip-stage iframe { display:none; width:100%; height:100%; border:0; background:#000; }
+    .clip-empty { color:var(--muted); text-align:center; padding:2rem; }
+    .clip-file { display:inline-block; cursor:pointer; border:1px solid var(--line); border-radius:99px; padding:.55rem 1rem; }
+    .clip-file input { display:none; }
+    .bili-cover { position:relative; width:100%; height:100%; overflow:hidden; cursor:pointer; border:0; padding:0; background:#000; text-align:left; }
+    .bili-cover img { width:100%; height:100%; object-fit:cover; display:block; opacity:.68; transition:transform .35s ease, opacity .35s ease; }
+    .bili-cover:hover img { transform:scale(1.015); opacity:.78; }
+    .bili-cover::after { content:""; position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.88),transparent 55%); }
+    .bili-play { position:absolute; z-index:2; left:50%; top:48%; transform:translate(-50%,-50%); width:76px; height:76px; border-radius:50%; border:1px solid rgba(255,255,255,.7); background:rgba(166,45,39,.92); display:grid; place-items:center; font-size:28px; padding-left:5px; box-shadow:0 12px 34px rgba(0,0,0,.42); }
+    .bili-caption { position:absolute; z-index:2; left:24px; right:24px; bottom:20px; }
+    .bili-caption strong { display:block; font-size:clamp(15px,1.5vw,24px); margin-bottom:.25rem; }
+    .bili-caption span { color:#d4cec1; font-size:clamp(10px,.9vw,14px); }
+
+    .takeaways { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:rgba(23,23,22,.2); }
+    .takeaway { background:var(--paper); padding:clamp(18px,2.5vw,36px); min-height:10rem; }
+    .takeaway b { display:block; color:var(--red); font-size:clamp(34px,4vw,64px); font-family:ui-serif,Georgia,serif; line-height:1; margin-bottom:.7rem; }
+    .takeaway p { margin:0; }
+
+    @media (max-width: 800px), (max-aspect-ratio: 4/3) {
+      .deck { scroll-snap-type:y proximity; }
+      .slide { min-height:100svh; padding:12px 10px 74px; place-items:start center; }
+      .frame { width:100%; height:auto; max-height:none; aspect-ratio:auto; min-height:calc(100svh - 86px); overflow:visible; padding:24px 20px 28px; }
+      h1 { font-size:clamp(42px,14vw,68px); }
+      h2 { font-size:clamp(30px,9vw,46px); margin-bottom:20px; }
+      h3 { font-size:18px; }
+      p, li { font-size:15px; }
+      .eyebrow { font-size:10px; }
+      .cover-image { inset:0; width:100%; height:100%; opacity:.44; object-position:64% center; }
+      .cover-frame { min-height:calc(100svh - 86px); }
+      .cover-frame::before { background:linear-gradient(0deg,rgba(23,23,22,.94) 0 24%,rgba(23,23,22,.3) 68%),linear-gradient(90deg,rgba(23,23,22,.88),transparent 85%); }
+      .cover-copy { max-width:100%; }
+      .grid-2, .door-stage { grid-template-columns:1fr; }
+      .grid-3, .visual-strip, .takeaways, .people, .fact-chain, .ending-sequence, .visual-pair, .language-split, .language-flow, .still-gallery.three, .still-gallery.two { grid-template-columns:1fr; }
+      .grid-2 { gap:18px; }
+      .photo-panel, .still-gallery .photo-panel { min-height:240px; }
+      .still-gallery .photo-panel img { object-fit:contain; background:#080808; }
+      .still-gallery .photo-panel.text-frame img { object-fit:contain; }
+      .person img { height:220px; }
+      .person-copy p, .scene-step p, .language-card p { font-size:14px; }
+      .fact p, .ending-step p { font-size:14px; }
+      .timeline { grid-template-columns:repeat(3,1fr); row-gap:22px; }
+      .big-number { display:none; }
+      .axis { grid-template-columns:1fr; gap:10px; }
+      .axis-center { writing-mode:horizontal-tb; }
+      .visual-strip { overflow:auto; }
+      .meta { position:static; margin-top:24px; gap:12px; line-height:1.4; }
+      .body-map { min-height:340px; }
+      .speaker-notes { position:fixed; left:10px; right:10px; bottom:70px; max-height:70svh; border:1px solid var(--red); padding:18px; }
+      .controls { left:8px; right:8px; bottom:8px; justify-content:center; gap:4px; padding:5px; }
+      .controls button { width:34px; height:34px; }
+      .counter { min-width:46px; }
+      .help, .sources, .clip-player { padding:10px; }
+      .panel, .clip-panel { width:100%; max-height:92svh; padding:20px 16px; }
+      .clip-stage { margin:.75rem 0; }
+      .bili-play { width:58px; height:58px; font-size:22px; }
+      .bili-caption { left:14px; right:14px; bottom:12px; }
+      .closing-question > span { white-space:normal; }
+      .language-flow { margin-top:18px; margin-bottom:0; }
+      .ending-analysis { margin-top:18px; }
+      .ending-analysis .contrast-card { min-height:0; }
+      .ending-analysis .contrast-card:first-child { margin-top:0; }
+      .ending-analysis .counterpoint { margin-top:12px; }
+    }
+    @media (max-width: 420px) {
+      .cover-credit { display:none; }
+      .history-item { grid-template-columns:70px 1fr; }
+      .history-item strong { font-size:26px; }
+      .device { font-size:12px; }
+      .heading-with-action { align-items:flex-start; flex-direction:column; }
+    }
+    @media print {
+      body { background:#fff; }
+      .progress,.controls,.help,.sources,.clip-player,.speaker-notes { display:none !important; }
+      .slide { min-height:auto; height:100vh; padding:0; break-after:page; }
+      .frame { width:100vw; height:100vh; max-height:none; box-shadow:none; border:0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+  <main class="deck" id="deck">
+    <section class="slide" data-title="开场命题">
+      <article class="frame cover-frame">
+        <img class="cover-image" src="germany-pale-mother-bfi-cover.jpg" alt="Lene 与女儿 Anna 坐在红色毯子上的电影剧照">
+        <div class="cover-copy">
+          <div class="eyebrow">电影分享 · 01 / 13</div>
+          <h1>德国，<br>苍白的母亲</h1>
+          <div class="redline"></div>
+          <p class="lead">战争结束了，为什么她的生活反而开始崩塌？</p>
+          <p class="muted">Helma Sanders-Brahms · 1980 · 从一位女儿的视角重写家庭史</p>
+        </div>
+        <footer class="meta"><span>一个家庭，如何承受一个国家的历史</span><span class="cover-credit">剧照：BFI</span><span class="time">01:00</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>开场只抛出一个矛盾：战时，Lene 在废墟中带着女儿活下来；战后，丈夫回家、秩序恢复，她却逐渐失去行动、身体和情感的自主。接下来所有内容都围绕这个矛盾展开。</p>
+          <p><b>封面剧照：</b>Lene 与女儿 Anna 坐在红色毯子上。画面先建立母女之间的亲密关系，也让后续关系的断裂更有重量。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="历史背景">
+      <article class="frame">
+        <div class="eyebrow">1933—1950 · 历史坐标 · 02 / 13</div>
+        <h2>四个时间点，理解她的一生</h2>
+        <div class="grid-2">
+          <div class="history-list">
+            <div class="history-item"><strong>1933</strong><p>纳粹掌权，国家开始重塑普通人的生活。</p></div>
+            <div class="history-item"><strong>1939</strong><p>德国入侵波兰。新婚不久，Hans 被送上前线。</p></div>
+            <div class="history-item"><strong>1945</strong><p>德国战败，城市成为废墟；对 Lene 而言，生活并未重新开始。</p></div>
+            <div class="history-item"><strong>1949–50</strong><p>两德建国，西德进入重建期；旧式家庭角色也迅速恢复。</p></div>
+          </div>
+          <figure class="photo-panel" style="margin:0">
+            <img src="germany-pale-mother-bfi-cover-main.jpg" alt="Lene 抱着女儿走过带有红十字符号的战争废墟">
+            <figcaption class="photo-caption">国家可以宣布战争结束，但个人的创伤与家庭秩序不会在 1945 年自动归零。｜剧照：BFI</figcaption>
+          </figure>
+        </div>
+        <footer class="meta"><span>所谓“零时刻”：国家断裂了，生活却没有清零</span><span class="time">03:00</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>“零时刻”不是一个客观、彻底清零的历史事实，而是描述 1945 年崩塌与新开端感受的强力隐喻。影片最尖锐的地方，是把镜头对准没有归零的东西：家庭权力和身体创伤。</p>
+          <p><b>呈现方式：</b>直接使用本页废墟剧照，不播放视频。把 1945 说成“国家断裂、个人生活没有归零”的分界点即可。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="三个人物">
+      <article class="frame light">
+        <div class="eyebrow">先认识这一家人 · 03 / 13</div>
+        <h2>故事围绕三个人展开</h2>
+        <div class="people">
+          <article class="person">
+            <img src="germany-pale-mother-bfi-cover.jpg" alt="Lene 与幼年的 Anna">
+            <div class="person-copy"><span class="role">母亲</span><h3>Lene</h3><p>战争期间独自带女儿求生；和平到来后，她反而越来越失去选择。</p></div>
+          </article>
+          <article class="person">
+            <img src="still-lene-hans-before.jpg" alt="Lene 与 Hans 在沙地上相互注视">
+            <div class="person-copy"><span class="role">丈夫</span><h3>Hans</h3><p>从战场归来，带着创伤，也重新占据家庭中作决定的位置。</p></div>
+          </article>
+          <article class="person">
+            <img src="still-anna.jpg" alt="童年 Anna 的正面肖像">
+            <div class="person-copy"><span class="role">女儿</span><h3>Anna</h3><p>她在结尾敲响母亲的门；成年女儿的旁白又重新讲述母亲。</p></div>
+          </article>
+        </div>
+        <footer class="meta"><span>战争把一家三口带向三种不同的创伤</span><span class="cover-credit">剧照：BFI</span><span class="time">02:00</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>只用三张人物剧照建立关系：Lene 求生、Hans 归来、Anna 见证。这里不播放视频，也不展开支线。</p>
+          <p>提问过渡：同一个女人，为什么在最危险的时候更能行动，在和平里却越来越瘫痪？</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="私人即政治">
+      <article class="frame">
+        <div class="eyebrow">战争如何进入一个家 · 04 / 13</div>
+        <h2>战争从来不只发生在前线</h2>
+        <div class="grid-2">
+          <div class="scene-steps">
+            <div class="scene-step"><div><h3>丈夫被征召</h3><p>国家直接改变了这段婚姻的形状。</p></div></div>
+            <div class="scene-step"><div><h3>房屋被炸毁</h3><p>Lene 抱着女儿，在废墟中寻找食物和住处。</p></div></div>
+            <div class="scene-step"><div><h3>丈夫从战场回来</h3><p>前线的暴力和沉默被带回了家庭。</p></div></div>
+            <div class="scene-step"><div><h3>“正常生活”恢复</h3><p>厨房、卧室和诊室继续承受战争留下的权力关系。</p></div></div>
+          </div>
+          <figure class="photo-panel" style="margin:0"><img src="still-family-debris.jpg" alt="一家人推着婴儿车穿越建筑废墟"><figcaption class="photo-caption">影片把轰炸、迁徙和家庭关系放在同一个画面里。｜剧照：BFI</figcaption></figure>
+        </div>
+        <footer class="meta"><span>这就是“私人即政治”：历史最终落在普通人的日常生活中</span><span class="time">02:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>不要把 Lene 的崩溃仅解释成个人性格或婚姻不幸。影片把宏观制度压缩在日常动作里：丈夫的沉默、医生的方案、妻子的服从、孩子的敲门。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="自主的逆转">
+      <article class="frame">
+        <div class="eyebrow">从战争到战后 · 05 / 13</div>
+        <h2>为什么她在和平里反而更无力？</h2>
+        <div class="grid-2">
+          <figure class="photo-panel" style="margin:0"><img src="slide5-lene-anna-bridge-mobile.jpg" alt="Lene 推着婴儿车、肩上驮着女儿走过桥面"><figcaption class="photo-caption">战时，Lene 必须自己行动：照顾女儿、寻找住处、作出生存决定。</figcaption></figure>
+          <div class="stack">
+            <div class="contrast-card"><h3><span>战时</span>她自己决定</h3><ul><li>带女儿躲避轰炸</li><li>寻找食物和栖身之处</li><li>母女组成生存共同体</li></ul></div>
+            <div class="contrast-card"><h3><span>战后</span>别人替她决定</h3><ul><li>Hans 重新成为家庭权威</li><li>她被要求回到妻子和母亲的位置</li><li>她的痛苦被沉默和“为你好”覆盖</li></ul></div>
+          </div>
+        </div>
+        <footer class="meta"><span>她在战争中获得的行动空间，并没有延续到和平生活</span><span class="time">03:00</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>用本页的文字对照和下一页的三张行走剧照完成“A/B 对照”。不播放视频，让观众把注意力放在行动权如何逆转。</p>
+          <p>强调“有限自主”：不要浪漫化战争。她的行动力来自生存压力，并不意味着战争解放了她。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="战时母女">
+      <article class="frame">
+        <div class="eyebrow">战时母女的移动 · 06 / 13</div>
+        <h2>她们没有目的地，只有下一处可以活下去的地方</h2>
+        <div class="still-gallery three">
+          <figure class="photo-panel"><img src="gallery-bridge-wide.jpg" alt="Lene 带着女儿和婴儿车走过钢桥"><figcaption class="photo-caption">穿过城市：母亲同时带着孩子、婴儿车和全部家当</figcaption></figure>
+          <figure class="photo-panel"><img src="gallery-snow.jpg" alt="Lene 在雪地里抱着女儿并携带行李"><figcaption class="photo-caption">穿过冬天：所有生活都背在身上</figcaption></figure>
+          <figure class="photo-panel"><img src="gallery-forest.jpg" alt="Lene 和女儿穿过雪中的白桦林，路旁躺着尸体"><figcaption class="photo-caption">穿过死亡：孩子与尸体出现在同一条路上</figcaption></figure>
+        </div>
+        <p class="gallery-note">战争中的“自主”，不是自由，而是被生存逼出来的行动。</p>
+        <footer class="meta"><span>母女关系先成为一个求生共同体</span><span class="time">01:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>让三张图依次停留：城市、冬天、死亡。这里不播放视频。重点不是她去了哪里，而是她必须不断行动，且没有任何制度真正保护她。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="身体与历史">
+      <article class="frame red">
+        <div class="eyebrow" style="color:#fff1d7">面瘫与拔牙 · 07 / 13</div>
+        <div class="heading-with-action">
+          <h2>这一场戏，究竟发生了什么？</h2>
+          <a class="video-entry" href="https://www.bilibili.com/video/BV122Yy6sEuH/?t=7200" target="_blank" rel="noreferrer">打开视频 · 2:00:00</a>
+        </div>
+        <div class="fact-chain">
+          <div class="fact"><b>01</b><p>Lene 的脸出现偏瘫，痛苦直接显现在面部。</p></div>
+          <div class="fact"><b>02</b><p>医生提出极端方案：拔掉她所有的牙齿。</p></div>
+          <div class="fact"><b>03</b><p>Hans 很快接受方案，没有替她寻求第二意见。</p></div>
+          <div class="fact"><b>04</b><p>不可逆的处置落在 Lene 身上，她却没有真正成为决定者。</p></div>
+        </div>
+        <p class="insight" style="margin-top:1.25rem">最难忍受的，不只是医疗方案本身，而是医生和丈夫以“为她好”的名义接管了她的身体。</p>
+        <footer class="meta" style="color:#f0c8c0"><span>当关心替代同意，照顾就可能变成控制</span><span class="time">03:00</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>按四步说明事实后，可从影片 2:00:00 播放约 20–30 秒，只观察医生、Hans 与 Lene 的位置和发言权；不必播放完整治疗过程。</p>
+          <p><b>三个观察点：</b>镜头把谁放在画面中心？谁拥有专业语言？Lene 是否获得第二意见、犹豫和拒绝的空间？</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="身体被接管">
+      <article class="frame">
+        <div class="eyebrow">身体作为历史表面 · 08 / 13</div>
+        <h2>她的脸和牙齿，成为别人处理的问题</h2>
+        <div class="still-gallery two">
+          <figure class="photo-panel"><img src="gallery-dental.jpg" alt="影片中的牙科治疗场景"><figcaption class="photo-caption">治疗发生在她身上，决定却不属于她</figcaption></figure>
+          <figure class="photo-panel"><img src="gallery-veiled-face.jpg" alt="Lene 的半张脸被深色织物遮挡"><figcaption class="photo-caption">面孔被遮挡、分割：身体创伤成为历史留下的表面</figcaption></figure>
+        </div>
+        <p class="insight" style="margin-top:1rem">医生拥有专业权威，丈夫拥有家庭权威；Lene 却失去对自己身体的决定权。</p>
+        <footer class="meta"><span>“为你好”不能替代她的同意</span><span class="time">01:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>这两张静帧已经足够建立冲击，不需要播放医疗过程。先说明不可逆的身体处置，再指出遮挡与分割如何把内在创伤直接变成可见形式。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="结尾开门">
+      <article class="frame ending-slide">
+        <div class="eyebrow">最后两分钟 · 09 / 13</div>
+        <div class="heading-with-action">
+          <h2>她为什么最终打开了门？</h2>
+          <a class="video-entry" href="https://www.bilibili.com/video/BV122Yy6sEuH/?t=8561" target="_blank" rel="noreferrer">打开视频 · 2:22:41</a>
+        </div>
+        <div class="ending-sequence">
+          <div class="ending-step"><b>“我需要爱”</b><p>Lene 向丈夫说出最直接的需要。</p></div>
+          <div class="ending-step"><b>没有回应</b><p>Hans 无视她的请求。</p></div>
+          <div class="ending-step"><b>关上门</b><p>她把自己与世界隔绝，准备自杀。</p></div>
+          <div class="ending-step active"><b>女儿敲门</b><p>Anna 一直哭喊，没有离开。</p></div>
+          <div class="ending-step active"><b>她开门</b><p>影片在这个动作上结束。</p></div>
+        </div>
+        <div class="grid-2 ending-analysis">
+          <div class="contrast-card"><h3>一方面｜活下去的联系</h3><p>丈夫没有回应她，但女儿仍在呼唤她。她与世界之间还有一条关系没有断。</p></div>
+          <div class="contrast-card counterpoint"><h3>另一方面｜无法退出的母职责任</h3><p>母亲身份也可能再次要求她承担责任。因此，“开门”并不是一个轻松的治愈结局。</p></div>
+        </div>
+        <footer class="meta"><span>她不是突然想通了，而是被女儿重新拉回了关系之中</span><span class="time">04:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>片段建议 · 80–100 秒</h3>
+          <p>这是最值得保留完整节奏的一段：Lene 说“我需要爱” → Hans 不回应 → 她关上门 → 女儿哭喊、敲门 → 她最终开门。不要在播放前给出结论，让观众先经历等待。</p>
+          <p>播放位置：影片 2:22:41。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="女儿视角">
+      <article class="frame light">
+        <div class="eyebrow">导演与家庭原型 · 10 / 13</div>
+        <h2>这是一位女儿拍给母亲的电影</h2>
+        <div class="grid-2">
+          <figure class="photo-panel" style="margin:0"><img src="still-anna.jpg" alt="童年 Anna 站在废墟前"><figcaption class="photo-caption">Anna 既是母亲生活的见证者，也是成年后重新讲述母亲的人。｜剧照：BFI</figcaption></figure>
+          <div class="stack">
+            <div class="card"><span class="index">1940 年出生</span><h3>Helma Sanders-Brahms</h3><p>她属于影片中女儿 Anna 所代表的战争儿童一代。</p></div>
+            <div class="card" style="margin-top:1.1rem"><span class="index">Lene 的原型</span><h3>就是导演自己的母亲</h3><p>电影基本来自她的家庭经验，但经过记忆、虚构和电影形式重新组织。</p></div>
+            <div class="card" style="margin-top:1.1rem"><span class="index">成年女儿的声音</span><h3>由导演本人旁白</h3><p>她不仅在讲母亲，也在追问：母亲经历的一切，如何影响了下一代。</p></div>
+          </div>
+        </div>
+        <footer class="meta"><span>私人家庭史，被拍成了一部关于德国的历史电影</span><span class="time">02:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲述重点</h3>
+          <p>明确三个事实：Sanders-Brahms 生于 1940 年；Lene 的原型是她的母亲；影片由导演本人旁白。直接读出一小句旁白的意思即可，不另播视频。</p>
+          <p>可以说影片“基本来自导演家庭经验”或“具有强烈自传性”，但不要把每个情节都当成家庭档案的逐字还原。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="电影语言">
+      <article class="frame language-slide">
+        <div class="eyebrow">情节剧 × 布莱希特式间离 · 11 / 13</div>
+        <h2>什么是“布莱希特式间离”？</h2>
+        <div class="language-split">
+          <div class="language-card">
+            <span class="term">情节剧 Melodrama</span>
+            <h3>让我们在乎这一家人</h3>
+            <p>婚姻破裂、母女依恋、身体痛苦和自杀未遂，让观众在情感上贴近 Lene。</p>
+          </div>
+          <div class="language-card emphasis">
+            <span class="term">间离 Verfremdung</span>
+            <h3>突然提醒你：这是一种历史建构</h3>
+            <p>电影故意打断沉浸，让你退后一步，重新思考正在看到的历史是谁讲的、怎样被讲出来。</p>
+          </div>
+        </div>
+        <div class="devices" aria-label="间离效果的具体表现">
+          <span class="device">新闻影像</span><span class="device">不自然的布景</span><span class="device">童话插入</span><span class="device">强烈象征</span><span class="device">旁白打断剧情</span><span class="device">声音与画面不完全匹配</span>
+        </div>
+        <div class="language-flow" aria-label="情节剧与间离共同作用的三个步骤">
+          <div class="language-step"><b>01 · 进入</b><span>情节剧先让我们在情感上贴近 Lene。</span></div>
+          <div class="language-step"><b>02 · 打断</b><span>间离用不自然的形式提醒我们：这是一部电影。</span></div>
+          <div class="language-step"><b>03 · 重看</b><span>观众再追问：这段历史由谁讲述，又如何被讲述？</span></div>
+        </div>
+        <footer class="meta"><span>先被人物打动，再被形式提醒：不要停止思考</span><span class="time">02:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>一句话解释间离：电影有时故意不让你彻底沉浸，而让你意识到“我正在观看一种关于历史的建构”。然后请观众回想影片中的新闻影像、舞台化布景、童话、象征、旁白和声画错位。</p>
+          <p><b>可选延伸：</b>BFI 文章提到评论者 Françoise Audé 将影片的视觉方式与新客观主义联系起来，并将 Otto Dix 视为可能的视觉先例。若时间有限，这部分只用一句话带过。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="间离的画面">
+      <article class="frame">
+        <div class="eyebrow">间离效果的三个瞬间 · 12 / 13</div>
+        <h2>导演故意让画面显得“不自然”</h2>
+        <div class="still-gallery three">
+          <figure class="photo-panel"><img src="gallery-veiled-face.jpg" alt="Lene 的脸被深色织物遮挡"><figcaption class="photo-caption"><b>遮挡</b>：人物不再是完整、自然的肖像</figcaption></figure>
+          <figure class="photo-panel ruins-child"><img src="gallery-child-ruins.jpg" alt="一名孩子独自穿过战争废墟的档案感画面"><a class="video-entry photo-video-entry" href="https://www.bilibili.com/video/BV122Yy6sEuH/?t=3560" target="_blank" rel="noreferrer" aria-label="在 Bilibili 打开影片，从 0:59:20 开始播放">播放 · 0:59:20</a><figcaption class="photo-caption"><b>档案影像</b>：孩子独自穿过废墟，家庭故事被重新放回历史现场</figcaption></figure>
+          <figure class="photo-panel text-frame"><img src="gallery-brecht-text-bilingual.png" alt="影片中突然出现的布莱希特诗句德中对照文字画面"><figcaption class="photo-caption"><b>中断</b>：文字突然替代剧情，提醒你正在看一部电影</figcaption></figure>
+        </div>
+        <p class="gallery-note">这种冷峻、不美化创伤的画面，也常让评论者联想到 Otto Dix 与新客观主义。</p>
+        <footer class="meta"><span>间离不是没有情感，而是在情感之后保留思考</span><span class="time">01:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>讲者提示</h3>
+          <p>这页把理论落到可见画面：遮挡破坏自然肖像，档案感的废墟画面让私人记忆重新撞上公共历史，诗句文字直接中断剧情。第二张图的按钮可从影片 0:59:20 打开对应段落。</p>
+        </aside>
+      </article>
+    </section>
+
+    <section class="slide" data-title="结论与讨论">
+      <article class="frame light">
+        <div class="eyebrow">三个答案 · 13 / 13</div>
+        <h2>战争结束，不等于权力结束</h2>
+        <div class="takeaways">
+          <div class="takeaway"><b>01</b><p>历史不是家庭之外的背景；家庭本身就是历史现场。</p></div>
+          <div class="takeaway"><b>02</b><p>Lene 的身体把战争、父权与医疗权威变成可见痕迹。</p></div>
+          <div class="takeaway"><b>03</b><p>最后的“开门”既是继续生存的选择，也可能意味着尚未解除的母职责任。</p></div>
+        </div>
+        <p class="quote closing-question" style="font-size:clamp(18px,2.3vw,38px);margin-top:1.5rem"><span>讨论：如果 1945 不是 Lene 的“零时刻”，</span><span>她真正需要的重新开始是什么？</span></p>
+        <footer class="meta"><span>问题没有解决，但关系尚未完全断裂</span><span class="time">01:30</span></footer>
+        <aside class="speaker-notes">
+          <h3>收束方式</h3>
+          <p>不要再复述结局。请听众用“决定权”回答：她需要的也许不是抽象的新生活，而是被倾听、被允许拒绝、拥有身体自主与不只由妻子／母亲角色定义的存在。</p>
+          <p>最后留出约 1 分钟让一两位同事回应讨论题。第 9 页保留完整结尾片段；第 7、12 页只是 20–30 秒的可选观察点。若超时，先略过这两个补充片段并压缩历史说明，不压缩结尾讨论。</p>
+        </aside>
+      </article>
+    </section>
+  </main>
+
+  <nav class="controls" aria-label="演示控制">
+    <button id="prev" title="上一页（←）" aria-label="上一页">←</button>
+    <span class="counter" id="counter">1 / 13</span>
+    <button id="next" title="下一页（→）" aria-label="下一页">→</button>
+    <button id="notesBtn" title="讲者备注（N）" aria-label="讲者备注">N</button>
+    <button id="clipBtn" title="播放结尾片段（V）" aria-label="播放结尾片段">▶</button>
+    <button id="sourcesBtn" title="参考资料（R）" aria-label="参考资料">R</button>
+    <button id="helpBtn" title="帮助（H）" aria-label="帮助">?</button>
+  </nav>
+
+  <div class="help" id="help" role="dialog" aria-modal="true" aria-label="操作帮助">
+    <div class="panel">
+      <div class="eyebrow">演示操作</div>
+      <h2>像 PPT 一样翻页，也可自然滚动</h2>
+      <div class="keys">
+        <kbd>← / →</kbd><span>上一页 / 下一页</span>
+        <kbd>↑ / ↓</kbd><span>上一页 / 下一页（触控板也可上下滚动）</span>
+        <kbd>手机手势</kbd><span>左右滑动翻页；上下滑动阅读当前页</span>
+        <kbd>Space</kbd><span>下一页</span>
+        <kbd>N</kbd><span>显示 / 隐藏当前页讲者备注</span>
+        <kbd>V</kbd><span>打开影片播放器（建议只在第 9 页播放结尾）</span>
+        <kbd>R</kbd><span>打开 / 关闭参考资料</span>
+        <kbd>F</kbd><span>进入 / 退出全屏</span>
+        <kbd>Esc</kbd><span>关闭弹层或退出全屏</span>
+      </div>
+      <p class="muted" style="margin-top:1.5rem">建议在分享前用 Chrome 或 Safari 打开，按 F 全屏，并先测试音量。讲者备注适合排练时查看，正式播放时关闭。</p>
+      <button class="ghost-btn" data-close="help">关闭</button>
+    </div>
+  </div>
+
+  <div class="clip-player" id="clipPlayer" role="dialog" aria-modal="true" aria-label="影片播放器">
+    <div class="panel clip-panel">
+      <div class="eyebrow">影片播放器 · 当前页：<span id="clipSlideTitle">开场命题</span></div>
+      <div class="clip-stage">
+        <button class="bili-cover" id="biliCover" type="button" aria-label="在演示稿中播放 Bilibili 视频">
+          <img src="germany-pale-mother-bfi-cover.jpg" alt="Lene 与女儿 Anna 坐在红色毯子上的电影剧照">
+          <span class="bili-play" aria-hidden="true">▶</span>
+          <span class="bili-caption"><strong>德国，苍白的母亲（1980）</strong><span>点击播放 · Bilibili 在线视频 · 剧照来源：BFI</span></span>
+        </button>
+        <iframe id="biliFrame" title="Bilibili 视频播放器" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen referrerpolicy="no-referrer"></iframe>
+        <div class="clip-empty" id="clipEmpty" style="display:none">选择你合法获得的本地视频片段。<br>文件只在当前浏览器中临时播放，不会上传。</div>
+        <video id="clipVideo" controls playsinline></video>
+      </div>
+      <div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">
+        <label class="clip-file">选择本地视频<input id="clipInput" type="file" accept="video/*"></label>
+        <a class="ghost-btn" href="https://www.bilibili.com/video/BV122Yy6sEuH/" target="_blank" rel="noreferrer">在 Bilibili 打开</a>
+        <span class="muted" id="clipName">默认使用 Bilibili 在线播放</span>
+        <button class="ghost-btn" data-close="clipPlayer">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sources" id="sources" role="dialog" aria-modal="true" aria-label="参考资料">
+    <div class="panel">
+      <div class="eyebrow">参考资料与使用边界</div>
+      <h2>资料来源</h2>
+      <ol class="source-list">
+        <li><a href="https://www.filmportal.de/film/deutschland-bleiche-mutter_e55247540f76443b8bb166d838528049" target="_blank" rel="noreferrer">filmportal.de：影片条目</a> — 首映、片长、主创与版本信息。</li>
+        <li><a href="https://www.dhm.de/zeughauskino/vorfuehrung/deutschland-bleiche-mutter-3805/" target="_blank" rel="noreferrer">德国历史博物馆 Zeughauskino：影片介绍</a> — 女儿视角、战时女性经验与战后性别秩序。</li>
+        <li><a href="https://www.bpb.de/shop/zeitschriften/apuz/303645/die-stunde-null-als-zeiterfahrung/" target="_blank" rel="noreferrer">德国联邦政治教育中心：作为时代经验的“零时刻”</a> — 概念的解释力、争议与历史连续性。</li>
+        <li><a href="https://www.deutsche-kinemathek.de/de/online/streaming/deutschland-bleiche-mutter" target="_blank" rel="noreferrer">德国电影资料馆：影片介绍</a> — 战时母女生存与战后旧性别角色回归。</li>
+        <li><a href="https://www.bfi.org.uk/features/germany-pale-mother-rediscovered-classic-new-german-cinema" target="_blank" rel="noreferrer">BFI：新德国电影中的重新发现之作</a> — 自传性、女儿旁白与女性导演语境。</li>
+      </ol>
+      <p class="muted">片段与截图请从你合法获得的影片版本中截取，仅用于内部、非公开的评论与教学分享。Otto Dix 图像未内嵌；如自行加入，请确认具体作品的展示许可。</p>
+      <button class="ghost-btn" data-close="sources">关闭</button>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const progress = document.getElementById('progressBar');
+      const counter = document.getElementById('counter');
+      const help = document.getElementById('help');
+      const sources = document.getElementById('sources');
+      const clipPlayer = document.getElementById('clipPlayer');
+      const clipVideo = document.getElementById('clipVideo');
+      const clipEmpty = document.getElementById('clipEmpty');
+      const clipInput = document.getElementById('clipInput');
+      const clipName = document.getElementById('clipName');
+      const clipSlideTitle = document.getElementById('clipSlideTitle');
+      const clipBtn = document.getElementById('clipBtn');
+      const biliCover = document.getElementById('biliCover');
+      const biliFrame = document.getElementById('biliFrame');
+      let current = 0;
+      let clipUrl = null;
+
+      function setCurrent(index, scroll = true) {
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        if (scroll) slides[current].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        progress.style.width = `${((current + 1) / slides.length) * 100}%`;
+        counter.textContent = `${current + 1} / ${slides.length}`;
+        clipBtn.hidden = current !== 8;
+        document.title = `${current + 1}/${slides.length} · ${slides[current].dataset.title}｜德国，苍白的母亲`;
+      }
+
+      function closeOverlays() {
+        help.classList.remove('open');
+        sources.classList.remove('open');
+        clipPlayer.classList.remove('open');
+        stopMedia();
+      }
+
+      function stopMedia() {
+        clipVideo.pause();
+        if (biliFrame.src) {
+          biliFrame.src = '';
+          biliFrame.style.display = 'none';
+          biliCover.style.display = 'block';
+        }
+      }
+
+      function toggleClipPlayer() {
+        clipSlideTitle.textContent = slides[current].dataset.title;
+        clipPlayer.classList.toggle('open');
+        if (!clipPlayer.classList.contains('open')) stopMedia();
+      }
+
+      function toggleNotes() {
+        const note = slides[current].querySelector('.speaker-notes');
+        if (!note) return;
+        slides.forEach((slide, i) => {
+          if (i !== current) slide.querySelector('.speaker-notes')?.classList.remove('open');
+        });
+        note.classList.toggle('open');
+      }
+
+      document.getElementById('prev').addEventListener('click', () => setCurrent(current - 1));
+      document.getElementById('next').addEventListener('click', () => setCurrent(current + 1));
+      document.getElementById('notesBtn').addEventListener('click', toggleNotes);
+      document.getElementById('clipBtn').addEventListener('click', toggleClipPlayer);
+      document.getElementById('helpBtn').addEventListener('click', () => help.classList.toggle('open'));
+      document.getElementById('sourcesBtn').addEventListener('click', () => sources.classList.toggle('open'));
+      document.querySelectorAll('[data-close]').forEach(btn => btn.addEventListener('click', () => {
+        document.getElementById(btn.dataset.close).classList.remove('open');
+        if (btn.dataset.close === 'clipPlayer') stopMedia();
+      }));
+      [help, sources, clipPlayer].forEach(el => el.addEventListener('click', e => {
+        if (e.target === el) { el.classList.remove('open'); if (el === clipPlayer) stopMedia(); }
+      }));
+      biliCover.addEventListener('click', () => {
+        clipVideo.pause();
+        clipVideo.style.display = 'none';
+        clipEmpty.style.display = 'none';
+        biliCover.style.display = 'none';
+        biliFrame.style.display = 'block';
+        biliFrame.src = 'https://player.bilibili.com/player.html?bvid=BV122Yy6sEuH&page=1&high_quality=1&danmaku=0&autoplay=1';
+        clipName.textContent = '正在通过 Bilibili 在线播放';
+      });
+      clipInput.addEventListener('change', () => {
+        const file = clipInput.files?.[0];
+        if (!file) return;
+        biliFrame.src = '';
+        biliFrame.style.display = 'none';
+        biliCover.style.display = 'none';
+        if (clipUrl) URL.revokeObjectURL(clipUrl);
+        clipUrl = URL.createObjectURL(file);
+        clipVideo.src = clipUrl;
+        clipVideo.style.display = 'block';
+        clipEmpty.style.display = 'none';
+        clipName.textContent = file.name;
+        clipVideo.play().catch(() => {});
+      });
+
+      document.addEventListener('keydown', e => {
+        if (/^(INPUT|TEXTAREA|VIDEO)$/.test(e.target.tagName)) return;
+        if (e.key === 'Escape') { closeOverlays(); return; }
+        if (help.classList.contains('open') || sources.classList.contains('open') || clipPlayer.classList.contains('open')) return;
+        if (['ArrowRight', 'ArrowDown', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); setCurrent(current + 1); }
+        if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); setCurrent(current - 1); }
+        if (e.key.toLowerCase() === 'n') toggleNotes();
+        if (e.key.toLowerCase() === 'h') help.classList.toggle('open');
+        if (e.key.toLowerCase() === 'r') sources.classList.toggle('open');
+        if (e.key.toLowerCase() === 'v' && current === 8) toggleClipPlayer();
+        if (e.key.toLowerCase() === 'f') {
+          if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+          else document.exitFullscreen?.();
+        }
+      });
+
+      const observer = new IntersectionObserver(entries => {
+        const visible = entries.filter(e => e.isIntersecting).sort((a,b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) setCurrent(slides.indexOf(visible.target), false);
+      }, { threshold: [.45, .65, .85] });
+      slides.forEach(slide => observer.observe(slide));
+
+      let touchStartX = 0;
+      let touchStartY = 0;
+      document.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+      }, { passive:true });
+      document.addEventListener('touchend', e => {
+        if (help.classList.contains('open') || sources.classList.contains('open') || clipPlayer.classList.contains('open')) return;
+        const dx = e.changedTouches[0].screenX - touchStartX;
+        const dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.2) setCurrent(current + (dx < 0 ? 1 : -1));
+      }, { passive:true });
+
+      setCurrent(0, false);
+    })();
+  </script>
+</body>
+</html>
