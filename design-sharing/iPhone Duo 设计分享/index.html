@@ -1,0 +1,748 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>iPhone Duo · 设计分享</title>
+  <style>
+    :root {
+      --paper: #f4f3ee;
+      --ink: #111114;
+      --muted: #66666d;
+      --accent: #ef4e42;
+      --chrome: #171719;
+      --focus: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body {
+      background: var(--paper);
+      color: #fff;
+      font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    button, select, a { font: inherit; }
+    a { color: inherit; }
+    ::selection { background: rgba(239, 78, 66, .28); color: inherit; }
+
+    .app {
+      min-height: 100%;
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+    .stage {
+      position: relative;
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      max-width: none;
+      max-height: none;
+      container-type: size;
+      overflow: hidden;
+      background: var(--paper);
+      box-shadow: 0 0 0 1px rgba(17, 17, 20, .04);
+      isolation: isolate;
+    }
+    .slide {
+      position: absolute;
+      inset: 0;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      background: var(--paper);
+      transition-property: opacity;
+      transition-duration: 150ms;
+      transition-timing-function: cubic-bezier(.2, 0, 0, 1);
+    }
+    .slide.is-active {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+    }
+    .slide-render { display: block; width: 100%; height: 100%; object-fit: fill; }
+    .gif-layer { position: absolute; display: block; object-fit: fill; }
+
+    .video-links {
+      position: absolute;
+      left: 65.2%;
+      top: 20.2%;
+      display: flex;
+      gap: .78cqw;
+      align-items: center;
+    }
+    .video-link {
+      min-height: 4.6cqh;
+      display: inline-flex;
+      align-items: center;
+      gap: .55cqw;
+      padding: 0 1.05cqw;
+      color: var(--ink);
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid rgba(17, 17, 20, .12);
+      border-radius: 4px;
+      box-shadow: 0 4px 14px rgba(17, 17, 20, .12);
+      font-size: 1.02cqw;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+      transition-property: transform, background-color, box-shadow;
+      transition-duration: 140ms;
+      transition-timing-function: cubic-bezier(.2, 0, 0, 1);
+    }
+    .video-link:hover { background: #fff; box-shadow: 0 6px 18px rgba(17, 17, 20, .18); }
+    .video-link:active { transform: scale(.96); }
+    .video-link:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .play-mark {
+      width: 0;
+      height: 0;
+      border-block: .39cqw solid transparent;
+      border-inline-start: .62cqw solid var(--accent);
+      transform: translateX(.05cqw);
+    }
+
+    .summary-slide { color: var(--ink); }
+    .summary-label {
+      position: absolute;
+      left: 4.88%;
+      top: 6.25%;
+      display: flex;
+      align-items: center;
+      gap: .68cqw;
+      color: var(--muted);
+      font-size: .81cqw;
+      font-weight: 700;
+    }
+    .summary-label span { width: 1.25cqw; height: 2px; background: var(--accent); }
+    .summary-slide h1 {
+      position: absolute;
+      left: 4.88%;
+      top: 10.8%;
+      width: 90%;
+      margin: 0;
+      color: var(--ink);
+      font-size: 3.28cqw;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-wrap: balance;
+    }
+    .summary-subtitle {
+      position: absolute;
+      left: 4.88%;
+      top: 18.6%;
+      width: 90%;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.28cqw;
+      line-height: 1.45;
+      text-wrap: pretty;
+    }
+    .summary-thesis {
+      position: absolute;
+      left: 4.88%;
+      top: 30%;
+      width: 30%;
+      padding-inline-end: 3.2cqw;
+    }
+    .summary-thesis strong {
+      display: block;
+      color: var(--accent);
+      font-size: 5.3cqw;
+      line-height: 1;
+      font-weight: 700;
+    }
+    .summary-thesis h2 {
+      margin: 2.1cqh 0 0;
+      font-size: 1.82cqw;
+      line-height: 1.38;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+    .summary-thesis p {
+      margin: 2.2cqh 0 0;
+      max-width: 26ch;
+      color: var(--muted);
+      font-size: 1.1cqw;
+      line-height: 1.62;
+      text-wrap: pretty;
+    }
+    .summary-points {
+      position: absolute;
+      left: 40.2%;
+      top: 28.5%;
+      width: 54.9%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: point;
+    }
+    .summary-points li {
+      position: relative;
+      min-height: 10.3cqh;
+      display: grid;
+      grid-template-columns: 3.3cqw 14.6cqw 1fr;
+      align-items: start;
+      gap: 1.15cqw;
+      padding: 1.7cqh 0 1.5cqh;
+      border-block-end: 1px solid rgba(17, 17, 20, .12);
+      counter-increment: point;
+    }
+    .summary-points li::before {
+      content: counter(point, decimal-leading-zero);
+      color: var(--accent);
+      font-size: 1.35cqw;
+      line-height: 1.25;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .summary-points b {
+      font-size: 1.25cqw;
+      line-height: 1.35;
+      font-weight: 700;
+    }
+    .summary-points span {
+      color: #3e3e43;
+      font-size: 1.03cqw;
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+    .controls {
+      position: fixed;
+      right: max(12px, env(safe-area-inset-right));
+      bottom: max(12px, env(safe-area-inset-bottom));
+      z-index: 20;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      padding: 3px 5px;
+      color: #f5f5f5;
+      background: var(--chrome);
+      border: 1px solid rgba(255, 255, 255, .09);
+      border-radius: 6px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, .32);
+      opacity: .22;
+      transition: opacity 160ms cubic-bezier(.2, 0, 0, 1), transform 160ms cubic-bezier(.2, 0, 0, 1);
+    }
+    .controls:hover,
+    .controls:focus-within {
+      opacity: 1;
+      transform: translateY(-2px);
+    }
+    .control-button {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      color: #f5f5f5;
+      background: transparent;
+      border: 0;
+      border-radius: 4px;
+      font-size: 17px;
+      line-height: 1;
+      cursor: pointer;
+      transition-property: transform, background-color;
+      transition-duration: 120ms;
+    }
+    .control-button:hover { background: rgba(255, 255, 255, .09); }
+    .control-button:active { transform: scale(.96); }
+    .control-button:disabled { opacity: .35; cursor: default; transform: none; }
+    .control-button:focus-visible,
+    .page-select:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+    .text-button { width: auto; padding-inline: 8px; font-size: 12px; }
+    .reading-panel {
+      width: min(880px, calc(100vw - 32px));
+      max-height: calc(100dvh - 32px);
+      padding: 24px;
+      color: var(--ink);
+      background: var(--paper);
+      border: 0;
+      border-radius: 8px;
+      overflow: auto;
+      overscroll-behavior: contain;
+      line-height: 1.75;
+    }
+    .reading-panel::backdrop { background: rgba(17, 17, 20, .65); }
+    .reading-header { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+    .reading-header h1 { margin: 0; font-size: 24px; }
+    .reading-close {
+      padding: 6px 12px;
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--muted);
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .reading-panel h2 { margin-block-start: 32px; font-size: 21px; }
+    .reading-panel h3 { font-size: 18px; }
+    .reading-panel p, .reading-panel li { overflow-wrap: anywhere; }
+    .reading-panel a { color: var(--accent); }
+    .reading-panel blockquote {
+      margin-inline: 0;
+      padding-inline-start: 16px;
+      border-inline-start: 3px solid var(--accent);
+      color: var(--muted);
+    }
+    .page-select {
+      width: min(190px, 38vw);
+      height: 30px;
+      padding: 0 26px 0 9px;
+      color: #f5f5f5;
+      background: #232326;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, .1);
+      pointer-events: none;
+    }
+    .progress span {
+      display: block;
+      width: 5%;
+      height: 100%;
+      background: var(--accent);
+      transition-property: width;
+      transition-duration: 180ms;
+      transition-timing-function: cubic-bezier(.2, 0, 0, 1);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    @media (max-width: 620px) {
+      .stage {
+        width: min(100vw, calc(100vh * 16 / 9));
+        height: min(100vh, calc(100vw * 9 / 16));
+      }
+      .page-select { width: min(160px, 42vw); }
+      .controls { right: 8px; bottom: max(8px, env(safe-area-inset-bottom)); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .slide, .progress span, .video-link, .control-button { transition-duration: 0ms; }
+    }
+    @media (forced-colors: active) {
+      .video-link, .controls, .page-select { border: 1px solid ButtonText; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <div class="stage" id="deck" aria-live="off">
+      <section class="slide is-active" id="slide-1" role="group" aria-roledescription="幻灯片" aria-label="第 1 页，共 20 页：Design for iPhone Duo" aria-hidden="false">
+    <img decoding="async" class="slide-render" src="assets/slide-01.png" data-src="assets/slide-01.png" alt="Design for iPhone Duo">
+
+
+  </section>
+<section class="slide" id="slide-2" role="group" aria-roledescription="幻灯片" aria-label="第 2 页，共 20 页：为什么 Apple 现在进入折叠屏？" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-02.png" alt="为什么 Apple 现在进入折叠屏？">
+
+
+    <nav class="video-links" aria-label="视频演示">
+      <a class="video-link" href="https://www.bilibili.com/video/BV1AyYb6rE1S/?t=0" target="_blank" rel="noopener noreferrer" aria-label="播放官网宣传片">
+        <span class="play-mark" aria-hidden="true"></span><span>官网宣传片</span>
+      </a>
+      <a class="video-link" href="https://www.bilibili.com/video/BV1cSec6tEux/?spm_id_from=333.337.search-card.all.click&t=295" target="_blank" rel="noopener noreferrer" aria-label="从 4 分 55 秒播放设计解析">
+        <span class="play-mark" aria-hidden="true"></span><span>04:55 · 设计解析</span>
+      </a>
+    </nav>
+  </section>
+<section class="slide" id="slide-3" role="group" aria-roledescription="幻灯片" aria-label="第 3 页，共 20 页：先看四种形态：折叠屏到底在解决什么？" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-03.png" alt="先看四种形态：折叠屏到底在解决什么？">
+
+
+  </section>
+<section class="slide" id="slide-4" role="group" aria-roledescription="幻灯片" aria-label="第 4 页，共 20 页：四款相近硬件，为什么仍然值得比较？" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-04.png" alt="四款相近硬件，为什么仍然值得比较？">
+
+
+  </section>
+<section class="slide" id="slide-5" role="group" aria-roledescription="幻灯片" aria-label="第 5 页，共 20 页：为什么 √2:1 成为中折叠的新主流？" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-05.png" alt="为什么 √2:1 成为中折叠的新主流？">
+
+
+  </section>
+<section class="slide" id="slide-6" role="group" aria-roledescription="幻灯片" aria-label="第 6 页，共 20 页：先看 6 种屏幕呈现状态" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-06.png" alt="先看 6 种屏幕呈现状态">
+
+
+  </section>
+<section class="slide" id="slide-7" role="group" aria-roledescription="幻灯片" aria-label="第 7 页，共 20 页：最大的变化：侧边控件栏" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-07.png" alt="最大的变化：侧边控件栏">
+
+
+  </section>
+<section class="slide" id="slide-8" role="group" aria-roledescription="幻灯片" aria-label="第 8 页，共 20 页：基础尺寸" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-08.png" alt="基础尺寸">
+
+
+  </section>
+<section class="slide" id="slide-9" role="group" aria-roledescription="幻灯片" aria-label="第 9 页，共 20 页：分屏时控件栏规范" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-09.png" alt="分屏时控件栏规范">
+
+
+  </section>
+<section class="slide" id="slide-10" role="group" aria-roledescription="幻灯片" aria-label="第 10 页，共 20 页：控件栏可自定义" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-10.png" alt="控件栏可自定义">
+
+
+  </section>
+<section class="slide" id="slide-11" role="group" aria-roledescription="幻灯片" aria-label="第 11 页，共 20 页：不是全部控件都放在侧边" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-11.png" alt="不是全部控件都放在侧边">
+
+
+  </section>
+<section class="slide" id="slide-12" role="group" aria-roledescription="幻灯片" aria-label="第 12 页，共 20 页：当控件很多放不下时怎么办" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-12.png" alt="当控件很多放不下时怎么办">
+
+
+  </section>
+<section class="slide" id="slide-13" role="group" aria-roledescription="幻灯片" aria-label="第 13 页，共 20 页：展开竖屏状态下，侧边栏会消失" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-13.png" alt="展开竖屏状态下，侧边栏会消失">
+    <img class="gif-layer" data-src="assets/slide-13-animation-01.gif" alt="第 13 页动态演示" style="left:52.364583%;top:6.444444%;width:44.916667%;height:86.212963%">
+
+  </section>
+<section class="slide" id="slide-14" role="group" aria-roledescription="幻灯片" aria-label="第 14 页，共 20 页：展开后不要只是拉伸内容" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-14.png" alt="展开后不要只是拉伸内容">
+    <img class="gif-layer" data-src="assets/slide-14-animation-01.gif" alt="第 14 页动态演示" style="left:48.817708%;top:13.259259%;width:48.822917%;height:74.435185%">
+
+  </section>
+<section class="slide" id="slide-15" role="group" aria-roledescription="幻灯片" aria-label="第 15 页，共 20 页：歌单页的展开布局" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-15.png" alt="歌单页的展开布局">
+
+
+  </section>
+<section class="slide" id="slide-16" role="group" aria-roledescription="幻灯片" aria-label="第 16 页，共 20 页：竖向偶数倍网格" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-16.png" alt="竖向偶数倍网格">
+    <img class="gif-layer" data-src="assets/slide-16-animation-01.gif" alt="第 16 页动态演示" style="left:45.588542%;top:37.407407%;width:53.234375%;height:53.240741%">
+
+  </section>
+<section class="slide" id="slide-17" role="group" aria-roledescription="幻灯片" aria-label="第 17 页，共 20 页：可重点设计坐立状态" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-17.png" alt="可重点设计坐立状态">
+    <img class="gif-layer" data-src="assets/slide-17-animation-01.gif" alt="第 17 页动态演示" style="left:50.000000%;top:32.157407%;width:50.000000%;height:50.000000%">
+
+  </section>
+<section class="slide" id="slide-18" role="group" aria-roledescription="幻灯片" aria-label="第 18 页，共 20 页：图标与通知卡" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-18.png" alt="图标与通知卡">
+    <img class="gif-layer" data-src="assets/slide-18-animation-01.gif" alt="第 18 页动态演示" style="left:2.046875%;top:26.907407%;width:46.182292%;height:48.944444%"><img class="gif-layer" data-src="assets/slide-18-animation-02.gif" alt="第 18 页动态演示" style="left:48.229167%;top:26.907407%;width:50.000000%;height:50.000000%">
+
+  </section>
+<section class="slide" id="slide-19" role="group" aria-roledescription="幻灯片" aria-label="第 19 页，共 20 页：画中画" aria-hidden="true">
+    <img decoding="async" class="slide-render" data-src="assets/slide-19.png" alt="画中画">
+    <img class="gif-layer" data-src="assets/slide-19-animation-01.gif" alt="第 19 页动态演示" style="left:35.234375%;top:22.703704%;width:62.229167%;height:62.231481%">
+
+  </section>
+      <section class="slide summary-slide" id="slide-20" role="group" aria-roledescription="幻灯片" aria-label="第 20 页，共 20 页：总结与思考" aria-hidden="true">
+  <div class="summary-label"><span></span>总结与思考</div>
+  <h1>从适配屏幕走向维护任务连续性</h1>
+  <p class="summary-subtitle">折叠屏带来的设计变化，最终落在任务如何跨尺寸、姿态和分屏持续进行。</p>
+
+  <div class="summary-thesis">
+    <strong>连续</strong>
+    <h2>屏幕状态会变化，<br>用户的目标不应重新开始。</h2>
+    <p>设计对象从单个页面扩展为任务在多个状态之间的迁移。</p>
+  </div>
+
+  <ol class="summary-points">
+    <li><b>状态优先于页面</b><span>开合、旋转和分屏后，保留输入、滚动、选择、播放与返回路径。</span></li>
+    <li><b>由可用空间触发布局</b><span>使用内容断点与窗格关系，避免按设备型号维护多套固定页面。</span></li>
+    <li><b>控件跟随内容与优先级</b><span>控件靠近所属内容；空间不足时压缩次要导航，保留核心任务。</span></li>
+    <li><b>姿态增强必须有明确收益</b><span>坐立态、画中画和铰链避让需要改善观看、输入或操作效率。</span></li>
+    <li><b>交付物必须覆盖状态迁移</b><span>原型演示连续 resize；规范写清六种状态、多窗格、焦点、键盘与文字放大。</span></li>
+  </ol>
+
+</section>
+      <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+    </div>
+    <nav class="controls" aria-label="幻灯片控制">
+      <button class="control-button" id="prevButton" type="button" aria-label="上一页" title="上一页">‹</button>
+      <select class="page-select" id="pageSelect" aria-label="跳转到指定页面"><option value="1">01 · Design for iPhone Duo</option><option value="2">02 · 为什么 Apple 现在进入折叠屏？</option><option value="3">03 · 先看四种形态：折叠屏到底在解决什么？</option><option value="4">04 · 四款相近硬件，为什么仍然值得比较？</option><option value="5">05 · 为什么 √2:1 成为中折叠的新主流？</option><option value="6">06 · 先看 6 种屏幕呈现状态</option><option value="7">07 · 最大的变化：侧边控件栏</option><option value="8">08 · 基础尺寸</option><option value="9">09 · 分屏时控件栏规范</option><option value="10">10 · 控件栏可自定义</option><option value="11">11 · 不是全部控件都放在侧边</option><option value="12">12 · 当控件很多放不下时怎么办</option><option value="13">13 · 展开竖屏状态下，侧边栏会消失</option><option value="14">14 · 展开后不要只是拉伸内容</option><option value="15">15 · 歌单页的展开布局</option><option value="16">16 · 竖向偶数倍网格</option><option value="17">17 · 可重点设计坐立状态</option><option value="18">18 · 图标与通知卡</option><option value="19">19 · 画中画</option><option value="20">20 · 总结与思考</option></select>
+      <button class="control-button" id="nextButton" type="button" aria-label="下一页" title="下一页">›</button>
+      <button class="control-button text-button" id="readingButton" type="button" aria-haspopup="dialog" aria-controls="readingDialog">文字版</button>
+      <button class="control-button" id="fullscreenButton" type="button" aria-label="进入全屏" title="全屏">⛶</button>
+    </nav>
+    <p class="sr-only" id="slideStatus" role="status" aria-live="polite"></p>
+  </main>
+  <dialog class="reading-panel" id="readingDialog" aria-labelledby="readingTitle">
+    <header class="reading-header">
+      <h1 id="readingTitle">iPhone Duo 设计分享 · 文字版</h1>
+      <button class="reading-close" id="readingCloseButton" type="button">关闭</button>
+    </header>
+    <p>分享人：文奖平 · 分享日期：2026-10-09</p>
+    <article id="readingContent">
+      <h2>一、为什么 Apple 现在进入折叠屏</h2>
+<p>折叠屏进入成熟期后，Apple 面对的核心问题不再是“要不要做折叠屏”，而是：</p>
+<blockquote><p>如何让折叠屏仍然像一台 iPhone？</p></blockquote>
+<p>核心判断：</p>
+<ul>
+<li>市场已经完成验证，折叠屏硬件进入可用区间。</li>
+<li>真正的差异开始转向软件和系统设计。</li>
+<li>Duo 被定义为“可放进口袋的最大 iPhone 显示体验”。</li>
+<li>内屏面积比 iPhone 18 Pro Max 增加约 50%。</li>
+<li>外屏面积比 iPhone 18 Pro 增加约 90%。</li>
+<li>内外屏之间可以自然切换，不需要重新理解 App。</li>
+</ul>
+<p>视频入口：</p>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1AyYb6rE1S/?t=0" target="_blank" rel="noopener noreferrer">官网宣传片</a></li>
+<li><a href="https://www.bilibili.com/video/BV1cSec6tEux/?spm_id_from=333.337.search-card.all.click&amp;t=295" target="_blank" rel="noopener noreferrer">设计解析（从 04:55 开始）</a></li>
+</ul>
+<h2>二、市场上的四种折叠形态</h2>
+<h3>1. 小折叠：竖向折叠</h3>
+<ul>
+<li>合上后便于携带。</li>
+<li>展开后恢复普通手机尺寸。</li>
+<li>重点是缩小设备体积。</li>
+<li>代表产品包括三星 Galaxy Z Flip、华为 Pocket 等。</li>
+</ul>
+<h3>2. 中折叠：横向展开</h3>
+<ul>
+<li>合上时接近普通手机。</li>
+<li>展开后获得更大的横向内容空间。</li>
+<li>适合邮件、网页、文档、视频和多窗格任务。</li>
+<li>代表产品包括三星 Galaxy Z Fold、小米 MIX Fold、华为 Mate X 系列。</li>
+</ul>
+<h3>3. 双折叠：大内折叠与外折叠</h3>
+<ul>
+<li>通过两条折痕获得更大的展开面积。</li>
+<li>内折叠强调屏幕保护，外折叠强调连续视觉面积。</li>
+<li>设备形态更接近小型平板。</li>
+</ul>
+<h3>4. 三折叠屏</h3>
+<ul>
+<li>通过三段屏幕组合，在手机、宽屏和接近平板之间切换。</li>
+<li>优势是面积更大，代价是重量、厚度和交互复杂度增加。</li>
+</ul>
+<h2>三、为什么 √2:1 成为中折叠的新主流</h2>
+<p>中折叠逐渐接近 <strong>√2:1 的结构比例</strong>。</p>
+<p>雷军在小米发布会中的解释是：</p>
+<ul>
+<li>√2:1 更接近 A4 纸张比例。</li>
+<li>与常见影视内容的比例更契合。</li>
+<li>展开后能够最大化利用屏幕界面。</li>
+<li>更适合阅读、网页、文档、视频和多窗格布局。</li>
+<li>能够减少传统折叠屏过于狭长或过于宽大的问题。</li>
+</ul>
+<p>同一个画面分别放在中折叠和大折叠设备上时，可以发现：大折叠的物理屏幕更大，但中折叠的有效内容面积并没有明显落后。</p>
+<blockquote><p>真正重要的是有效内容面积，而不是展开后的物理尺寸。</p></blockquote>
+<h2>四、iPhone Duo 的六种屏幕状态</h2>
+<ol>
+<li>合上状态</li>
+<li>展开状态</li>
+<li>展开后的横屏状态</li>
+<li>展开后的竖屏状态</li>
+<li>半折状态</li>
+<li>分屏状态</li>
+</ol>
+<p>设计时持续观察三个问题：</p>
+<ul>
+<li>控件在哪里？</li>
+<li>内容如何重新排列？</li>
+<li>开合之后任务有没有中断？</li>
+</ul>
+<p>折叠屏设计的重点，是让不同状态保持同一个任务，而不是把它们设计成互不相关的页面。</p>
+<h2>五、侧边控件栏</h2>
+<p>Duo 的关键变化之一，是将部分控件从传统顶部或底部位置转移到侧边。</p>
+<ul>
+<li>与设备硬件边缘保持一致。</li>
+<li>避免控件占用内容区域。</li>
+<li>减少横屏、竖屏和展开状态之间的控件迁移。</li>
+<li>让导航、工具和内容拥有更加稳定的空间关系。</li>
+<li>适应折叠屏外屏较短、内屏较宽的差异。</li>
+</ul>
+<p>控件应该跟随内容关系和硬件边界，而不是固定在某个页面坐标上。</p>
+<h2>六、分屏与控件栏规范</h2>
+<p>分屏状态下：</p>
+<ul>
+<li>控件归属于对应的内容窗格。</li>
+<li>不同窗格之间保持明确边界。</li>
+<li>主要操作优先保留，次要操作可以压缩或收进溢出菜单。</li>
+<li>控件不能因为分屏而失去原来的语义。</li>
+<li>用户应当知道当前控件作用于哪个内容区域。</li>
+</ul>
+<p>不同页面的任务重点不同，因此控件栏需要根据当前任务调整控件数量、顺序、位置和层级。</p>
+<h2>七、控件位置与压缩策略</h2>
+<p>侧边栏适合承载与页面关系稳定的控件，但并非所有控件都应该集中到侧边：</p>
+<ul>
+<li>与当前内容强相关的操作，应靠近内容。</li>
+<li>全局导航可以放在固定区域。</li>
+<li>临时操作可以使用浮层或 Sheet。</li>
+<li>系统级状态应与 App 控件保持清晰区分。</li>
+</ul>
+<p>当控件很多时：</p>
+<ul>
+<li>任务操作优先的页面，可以压缩标签栏。</li>
+<li>全局导航优先的页面，可以压缩工具栏。</li>
+<li>顶部保留返回、关闭等主要导航操作。</li>
+<li>主要动作放在醒目位置。</li>
+<li>其他工具保持原有分组。</li>
+<li>空间不足时，App 控件从下往上收进溢出菜单。</li>
+</ul>
+<h2>八、展开后的布局原则</h2>
+<p>内屏变大，不等于把原有页面横向拉宽。</p>
+<p>需要重新思考：</p>
+<ul>
+<li>信息层级是否应该重新展开。</li>
+<li>单栏内容是否可以变成双栏。</li>
+<li>列表和详情是否可以同时展示。</li>
+<li>导航是否可以与内容并列。</li>
+<li>操作区域是否应该从浮层变为固定窗格。</li>
+</ul>
+<p>展开后的页面应重新组织信息关系，而不是简单放大原有页面。</p>
+<h3>歌单页</h3>
+<ul>
+<li>左侧展示歌单或导航。</li>
+<li>中间展示歌曲列表。</li>
+<li>右侧展示当前播放信息或详情。</li>
+<li>播放状态、选中状态和滚动位置保持连续。</li>
+</ul>
+<h3>竖向偶数倍网格</h3>
+<ul>
+<li>适应展开后的纵向空间。</li>
+<li>让卡片数量稳定变化。</li>
+<li>减少不同姿态下的跳动。</li>
+<li>便于从单栏过渡到双栏或多栏。</li>
+</ul>
+<h2>九、姿态设计与案例</h2>
+<p>某些折叠姿态值得专门设计，例如：</p>
+<ul>
+<li>设备半折后放在桌面上。</li>
+<li>用户坐立观看视频。</li>
+<li>上半部分负责展示，下半部分负责操作。</li>
+<li>画面与控制区域形成稳定分工。</li>
+</ul>
+<p>判断一种姿态是否值得设计，需要先问：</p>
+<ul>
+<li>用户是否会稳定地这样放置设备？</li>
+<li>这种姿态是否改善观看体验？</li>
+<li>是否减少手持操作？</li>
+<li>是否让输入和控制更方便？</li>
+<li>是否真正提升任务效率？</li>
+</ul>
+<p>姿态不是功能清单，而是任务条件。</p>
+<h3>图标、通知卡与画中画</h3>
+<ul>
+<li>外屏优先保证快速识别。</li>
+<li>内屏可以展示更多信息。</li>
+<li>通知卡根据宽度调整信息层级。</li>
+<li>画中画需要处理窗口位置、折痕、摄像头、播放状态和继续浏览之间的关系。</li>
+</ul>
+<h2>十、总结与思考</h2>
+<h3>从适配屏幕走向维护任务连续性</h3>
+<p>折叠屏带来的设计变化，最终落在任务如何跨尺寸、姿态和分屏持续进行。</p>
+<blockquote><p>屏幕状态会变化，用户的目标不应重新开始。</p></blockquote>
+<h3>1. 状态优先于页面</h3>
+<p>开合、旋转和分屏后，保留输入、滚动、选择、播放与返回路径。</p>
+<h3>2. 由可用空间触发布局</h3>
+<p>使用内容断点与窗格关系，避免按设备型号维护多套固定页面。</p>
+<h3>3. 控件跟随内容与优先级</h3>
+<p>控件靠近所属内容；空间不足时压缩次要导航，保留核心任务。</p>
+<h3>4. 姿态增强必须有明确收益</h3>
+<p>坐立态、画中画和铰链避让需要改善观看、输入或操作效率。</p>
+<h3>5. 交付物必须覆盖状态迁移</h3>
+<p>原型演示连续 resize；规范写清六种状态、多窗格、焦点、键盘与文字放大。</p>
+<h2>最终观点</h2>
+<p>折叠屏设计的关键，不是让每个姿态都看起来不同，而是让用户在设备变化时仍然保持同一个目标、同一条任务路径和同一套理解方式。</p>
+    </article>
+  </dialog>
+  <script>
+    (() => {
+      const slides = [...document.querySelectorAll('.slide')];
+      const select = document.getElementById('pageSelect');
+      const prev = document.getElementById('prevButton');
+      const next = document.getElementById('nextButton');
+      const fullscreen = document.getElementById('fullscreenButton');
+      const progress = document.getElementById('progressBar');
+      const status = document.getElementById('slideStatus');
+      const readingDialog = document.getElementById('readingDialog');
+      let current = 0;
+
+      const fromHash = () => {
+        const match = location.hash.match(/^#slide-(\d+)$/);
+        return match ? Math.min(slides.length - 1, Math.max(0, Number(match[1]) - 1)) : 0;
+      };
+
+      const syncMedia = (slide, active) => {
+        slide.querySelectorAll('.slide-render, .gif-layer').forEach((image) => {
+          if (active && !image.hasAttribute('src')) image.src = image.dataset.src;
+          else if (!active && image.classList.contains('gif-layer')) image.removeAttribute('src');
+        });
+      };
+
+      const show = (index, updateHash = true) => {
+        const target = Math.min(slides.length - 1, Math.max(0, index));
+        slides.forEach((slide, i) => {
+          const active = i === target;
+          slide.classList.toggle('is-active', active);
+          slide.setAttribute('aria-hidden', String(!active));
+          syncMedia(slide, active);
+        });
+        current = target;
+        select.value = String(current + 1);
+        prev.disabled = current === 0;
+        next.disabled = current === slides.length - 1;
+        progress.style.width = ((current + 1) / slides.length * 100) + '%';
+        status.textContent = '第 ' + (current + 1) + ' 页，共 ' + slides.length + ' 页：' + select.options[current].text.replace(/^\d+ · /, '');
+        document.title = select.options[current].text.replace(/^\d+ · /, '') + ' · iPhone Duo';
+        if (updateHash) history.replaceState(null, '', '#slide-' + (current + 1));
+      };
+
+      prev.addEventListener('click', () => show(current - 1));
+      next.addEventListener('click', () => show(current + 1));
+      select.addEventListener('change', () => show(Number(select.value) - 1));
+      window.addEventListener('hashchange', () => show(fromHash(), false));
+      document.getElementById('readingButton').addEventListener('click', () => readingDialog.showModal());
+      document.getElementById('readingCloseButton').addEventListener('click', () => readingDialog.close());
+      document.addEventListener('keydown', (event) => {
+        if (readingDialog.open || event.target.matches('select, a, button')) return;
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); show(current + 1); }
+        if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); show(current - 1); }
+        if (event.key === 'Home') { event.preventDefault(); show(0); }
+        if (event.key === 'End') { event.preventDefault(); show(slides.length - 1); }
+      });
+
+      let startX = null;
+      document.getElementById('deck').addEventListener('pointerdown', (event) => { startX = event.clientX; });
+      document.getElementById('deck').addEventListener('pointerup', (event) => {
+        if (startX === null) return;
+        const delta = event.clientX - startX;
+        startX = null;
+        if (Math.abs(delta) > 60) show(current + (delta < 0 ? 1 : -1));
+      });
+
+      fullscreen.addEventListener('click', async () => {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (_) {}
+      });
+      document.addEventListener('fullscreenchange', () => {
+        const active = Boolean(document.fullscreenElement);
+        fullscreen.setAttribute('aria-label', active ? '退出全屏' : '进入全屏');
+        fullscreen.title = active ? '退出全屏' : '全屏';
+      });
+
+      show(fromHash(), false);
+    })();
+  </script>
+</body>
+</html>
