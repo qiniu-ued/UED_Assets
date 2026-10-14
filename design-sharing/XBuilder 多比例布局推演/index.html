@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="从新增游戏比例出发，推演 XBuilder 的布局、内容归属与空间取舍。支持原型动画、线上对比与多屏幕适配演示。">
+  <title>XBuilder · 多比例布局推演</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2327bac7'/%3E%3Cpath d='M8 8h7v7H8zm9 0h7v16h-7zM8 17h7v7H8z' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="./assets/styles.css?v=briefing-scroll">
+</head>
+<body>
+  <div class="page">
+    <header class="intro">
+      <div><h1>XBuilder 布局调整提案</h1><p class="lead">适配三种游戏比例，明确对象与内容的关系，在兼顾预览和代码编辑的前提下提高精灵列表容量。</p></div>
+      <nav class="header-links" aria-label="相关链接"><a href="https://builder-rn12ofm80-xgo-team.vercel.app/" target="_blank" rel="noopener">最终稿<svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 17 17 7M7 7h10v10"/></svg></a><a href="https://github.com/goplus/builder/pull/3480" target="_blank" rel="noopener">PR #3480<svg class="link-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M7 17 17 7M7 7h10v10"/></svg></a></nav>
+    </header>
+
+    <main>
+      <section class="demo" aria-label="交互布局演示">
+        <nav class="mode-nav" aria-label="演示章节">
+          <button type="button" data-mode="design" class="active" aria-pressed="true"><span>01</span> 最终设计</button>
+          <button type="button" data-mode="compare" aria-pressed="false"><span>02</span> 线上对比</button>
+          <button type="button" data-mode="explore" aria-pressed="false"><span>03</span> 探索过程</button>
+          <button type="button" data-mode="adapt" aria-pressed="false"><span>04</span> 屏幕适配</button>
+        </nav>
+        <div class="demo-grid">
+          <div class="visual-column">
+            <div class="control-row">
+              <div class="ratios" role="group" aria-label="项目视口比例">
+                <button type="button" data-ratio="4:3" class="active" aria-pressed="true"><span class="ratio-shape classic" aria-hidden="true"></span>4:3</button>
+                <button type="button" data-ratio="16:9" aria-pressed="false"><span class="ratio-shape wide" aria-hidden="true"></span>16:9</button>
+                <button type="button" data-ratio="9:16" aria-pressed="false"><span class="ratio-shape portrait" aria-hidden="true"></span>9:16</button>
+              </div>
+              <button type="button" id="play" class="play-control" aria-pressed="false"><span aria-hidden="true">▷</span> 自动演示</button>
+            </div>
+            <div id="secondary-controls" class="secondary-controls"></div>
+            <div class="browser-shell">
+              <div class="browser-bar"><div class="browser-dots" aria-hidden="true"><i></i><i></i><i></i></div></div>
+              <div id="canvas-wrap" class="canvas-wrap">
+                <div id="canvas" class="canvas" lang="en">
+                  <div class="mock-navigation"><strong>XBuilder</strong><span>Project</span><span class="publish-label">Publish</span></div>
+                  <div id="editor" class="block editor"><div class="panel-header"><span class="code-tab">Code</span><span class="asset-tabs">Assets</span><span id="owner" class="owner">Sprite 01 · Content</span></div><div class="code-paper"><span class="code-caption">Sprite 01 · Code</span><div class="skeleton-lines" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div></div>
+                  <div id="api" class="block api"><div class="panel-header">API reference</div><div class="api-placeholder" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div></div>
+                  <div id="preview" class="block preview"><div class="panel-header">Preview <div class="preview-actions"><span class="run-label">▷ Run</span></div></div><div class="preview-body"><div id="game-plane" class="game-plane"><span id="preview-ratio">4:3</span><small>Game viewport</small></div></div></div>
+                  <div id="stage" class="block stage"><div class="panel-header">Stage</div><div class="stage-body"><button type="button" id="stage-root" class="stage-root" aria-label="View Stage content"><span></span></button><div class="stage-divider" aria-hidden="true"></div><div class="stage-actions"><span>Backdrops</span><span>Sounds</span><span>Widgets</span></div></div></div>
+                  <div id="sprites" class="block sprites"><div class="panel-header">Sprites <span aria-hidden="true">＋</span></div><div id="sprite-list" class="sprite-list"></div></div>
+                </div>
+              </div>
+            </div>
+            <div class="focus-tools" role="group" aria-label="观察重点"><button type="button" data-focus="ownership" aria-pressed="false">内容归属</button><button type="button" data-focus="actions" aria-pressed="false">操作位置</button><button type="button" id="high-fidelity" aria-haspopup="dialog" aria-controls="high-fidelity-dialog">高保真</button></div>
+          </div>
+          <aside class="briefing" aria-label="设计与布局说明">
+            <div class="briefing-tabs" role="tablist" aria-label="说明分类">
+              <button type="button" id="briefing-title" role="tab" data-briefing="design" aria-controls="design-notes" aria-selected="true" tabindex="0">设计思路</button>
+              <button type="button" id="layout-title" role="tab" data-briefing="layout" aria-controls="layout-notes" aria-selected="false" tabindex="-1">布局说明</button>
+            </div>
+            <div id="design-notes" role="tabpanel" aria-labelledby="briefing-title" tabindex="0">
+            <ol>
+              <li><strong>设计背景与要求</strong><p>新增 16:9、9:16 后，预览与列表的可用空间随之变化。提案按可能包含数十至上百个精灵的项目场景考虑容量，在兼顾预览与代码编辑区宽度的前提下，提高精灵列表的可见数量。</p></li>
+              <li><strong>解决什么问题</strong>
+                <p>预览呈现舞台与精灵共同构成的运行画面；舞台与每个精灵分别对应各自的代码与素材。布局需要表达以下关系：</p>
+                <figure id="content-tree" class="content-tree" lang="en" role="img" aria-label="XBuilder contains Preview. Preview contains Stage and Sprite, each with its own Code and Assets.">
+                  <div class="content-tree-art" aria-hidden="true">
+                    <div class="tree-card tree-root">XBuilder</div>
+                    <div class="tree-stem"></div>
+                    <div class="tree-card tree-preview">Preview</div>
+                    <div class="tree-branches">
+                      <div class="tree-branch">
+                        <div class="tree-card tree-object">Stage</div>
+                        <div class="tree-leaves">
+                          <div class="tree-card">Code</div>
+                          <div class="tree-card">Assets</div>
+                        </div>
+                      </div>
+                      <div class="tree-branch">
+                        <div class="tree-card tree-object">Sprite</div>
+                        <div class="tree-leaves">
+                          <div class="tree-card">Code</div>
+                          <div class="tree-card">Assets</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </figure>
+                <p>原有布局主要依靠选中状态与内容标识表达对应关系。本次提案进一步考察三个方面：</p>
+                <ul class="tradeoff-points">
+                  <li>选择与编辑：尝试用空间顺序提示「先选对象，再编辑内容」，让对象入口位于编辑区之前。</li>
+                  <li>内容对应：加强对象入口与编辑区的位置联系，同时保留选中状态与内容标题。</li>
+                  <li>作用范围：运行反馈出现在预览中，发布作用于整个项目，按这两种范围安排操作入口。</li>
+                </ul>
+                <p>这些是布局判断的依据；能否帮助用户理解与操作，仍需实际任务验证。</p>
+              </li>
+              <li><strong>设计决策与规范</strong>
+                <ul class="tradeoff-points">
+                  <li>三种视口采用近似等面积的设计基准：480 × 360、545 × 307、307 × 545；按可用空间等比缩放。</li>
+                  <li>Stage 内容有限，竖版采用 120–144px 高度区间。</li>
+                  <li>复用 88 × 88px 卡片设计尺寸，按整数列排布，避免横向裁切。</li>
+                </ul>
+              </li>
+              <li><strong>图示与验证范围</strong><p>探索稿中的 Preview area 是预览面板占位，比例文字标示目标游戏比例。Code / Assets 概括对象的代码与素材，具体页签随对象变化。列表数量用于模拟空间占用，目前没有真实用户数据。</p></li>
+            </ol>
+            </div>
+            <section id="layout-notes" class="narrative" role="tabpanel" aria-labelledby="layout-title" tabindex="0" hidden>
+              <h2 id="case-title">横版布局</h2>
+              <p id="case-summary">Stage、Sprites 在左，所属 Code 与资源在右。</p>
+              <ul id="talking-points" class="talking-points"></ul>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+    </main>
+  </div>
+  <dialog id="high-fidelity-dialog" class="high-fidelity-dialog" aria-labelledby="high-fidelity-title">
+    <header class="high-fidelity-header"><h2 id="high-fidelity-title">高保真</h2><form method="dialog"><button type="submit" autofocus>关闭</button></form></header>
+    <img class="high-fidelity-image" src="./assets/high-fidelity.png?v=86436dc50c75" width="3024" height="1898" alt="XBuilder 高保真界面：预览、舞台和精灵列表在左，代码与 API Reference 在右。">
+  </dialog>
+  <script type="module" src="./assets/app.mjs"></script>
+</body>
+</html>
