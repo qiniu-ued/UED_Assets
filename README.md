@@ -15,7 +15,7 @@ design-sharing/
 ```
 
 - `index.html`：固定入口，包含完整正文与展示内容。
-- `README.md`：简要记录内容简介、分享人、分享日期和预览链接，不重复正文；提交与更新记录由 Git 保留。
+- `README.md`：简要记录内容简介、分享人、分享日期和预览链接，不重复正文。
 - `assets/`：存放页面实际引用的图片、样式和脚本，通过相对路径加载。
 
 ## 资源管理
@@ -31,8 +31,10 @@ design-sharing/
 3. 创建 PR：源分支为临时开发分支，目标分支为 `ui`；说明按 [PR 模板](https://github.com/qiniu-ued/UED_Assets/blob/main/ued-pr-template.md)填写。
 
 - `ui` 用于日常集成，PR 至少需要 1 个 Approve；`main` 用于正式发布，由管理员统一通过 `ui → main` PR 合入。
-- 禁止直接向 `ui`、`main` 提交，也禁止删除或强制推送这两个分支。
-- 团队仓库长期仅保留 `ui`、`main`；普通临时分支在 PR 合并后自动删除。
+- 禁止直接向 `ui`、`main` 提交。
+- 普通临时分支在 PR 合并后自动删除。
+
+分支维护及发布合并方式见 [仓库维护约定](MAINTENANCE.md)。
 
 ## 在线预览
 
