@@ -12,13 +12,3 @@
 [查看分享](https://qiniu-ued.github.io/UED_Assets/design-sharing/XBuilder%20%E5%A4%9A%E6%AF%94%E4%BE%8B%E5%B8%83%E5%B1%80%E6%8E%A8%E6%BC%94/index.html)
 
 预览地址为 Pages 根地址 `https://qiniu-ued.github.io/UED_Assets/` 加上仓库相对路径 `design-sharing/XBuilder 多比例布局推演/index.html`。正式预览在管理员将 `ui` 合入 `main` 并完成 Pages 部署后生效。
-
-## 补充资料
-
-- [原始分享站点](https://xbuilder-layout-proposal.annie0705.chatgpt.site/)
-- [最终稿](https://builder-rn12ofm80-xgo-team.vercel.app/)
-- [实现 PR #3480](https://github.com/goplus/builder/pull/3480)
-
-本次按原站点第 20 版整理，保留原有内容与交互。页面中的容量和布局效果是原型示意，不代表真实用户数据或已完成的用户任务验证。
-
-本地查看时请保留 `index.html` 与同目录的 `assets/`，并使用静态 HTTP 服务打开；模块脚本和图片通过相对路径加载。
