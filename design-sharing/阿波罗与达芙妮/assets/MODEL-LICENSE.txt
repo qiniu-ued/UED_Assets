@@ -1,0 +1,8 @@
+Apollo and Daphne at the Galleria Borghese, Rome
+Creator: Scan-the-World
+Source: https://zenodo.org/records/21689297
+License: CC BY-NC-SA 4.0
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+The original GLB bytes are preserved. Intermediate meshes are reverse-derived teaching envelopes, not documented historical maquettes. Materials and illumination are a digital reconstruction.
+Original GLB MD5: 57eb41c2fb516da79b76370c985bce8e

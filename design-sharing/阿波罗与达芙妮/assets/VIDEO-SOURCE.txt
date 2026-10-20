@@ -1,0 +1,11 @@
+Apollo and Daphne — original work walkaround recording
+Source: user-provided reference project, site/dist/assets/original-reference.mp4
+Imported without alteration at the user's request.
+SHA-256: 9a43109a63d56c1ba888fc4ce381ca4a3cf85311c6eaab4f2ad0914bf9bbe445
+Duration: 35.573333 seconds; 602 × 1080, H.264/AAC.
+This recording depicts the original sculpture, separately from the 3D teaching reconstruction.
+
+Photographer: not verified; the user confirmed on 2026-10-20 that the source is currently unknown.
+Original publication URL: not verified.
+Video licence / redistribution permission: not verified. Do not infer permission from the 3D model's CC BY-NC-SA 4.0 licence.
+Cover image: a still derived from the supplied recording; the same unresolved provenance applies.
