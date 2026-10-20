@@ -1,0 +1,65 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f2efe7">
+<title>阿波罗与达芙妮</title>
+<meta name="description" content="《阿波罗与达芙妮》教学重建：泥塑、翻模、定位和雕凿，共四个主要步骤。">
+<link rel="stylesheet" href="./assets/figure.css?v=eb5b73e76c">
+<script src="./assets/translations.js?v=2bd52ab874" defer=""></script>
+<script src="./assets/i18n.js?v=d6e43148ee" defer=""></script>
+<script type="module" src="./assets/figure.js?v=cbc67f8c04"></script>
+</head>
+<body data-figure="sculpture">
+<main class="figure-card" aria-labelledby="figure-title">
+  <header class="figure-heading">
+    <h1 id="figure-title">阿波罗与达芙妮</h1>
+    <div class="canvas-hint"><span class="mouse-hint">拖动旋转 · 滚轮缩放</span><span class="touch-hint">拖动旋转 · 双指缩放</span></div>
+  </header>
+  <div class="figure-workspace">
+  <div class="step-rail">
+  <div class="stages" id="process-timeline" role="group" aria-label="制作时间轴">
+    <button type="button" data-stage="clay" aria-pressed="true" disabled=""><span aria-hidden="true">01</span><span>泥塑</span></button>
+    <button type="button" data-stage="mold" aria-pressed="false" disabled=""><span aria-hidden="true">02</span><span>翻模</span></button>
+    <button type="button" data-stage="point" aria-pressed="false" disabled=""><span aria-hidden="true">03</span><span>定位</span></button>
+    <button type="button" data-stage="carve" aria-pressed="false" disabled=""><span aria-hidden="true">04</span><span>雕凿</span></button>
+  </div>
+  </div>
+  <div class="figure-view">
+  <section class="stage" aria-label="大理石雕刻过程动画">
+    <div id="model-host" aria-label="可交互大理石雕塑" aria-busy="true"></div>
+    <div class="initial-loading" id="initial-loading"><span class="loading-mark" aria-hidden="true"></span><span id="initial-loading-text">正在准备大理石…</span></div>
+  </section>
+  <p class="process-caption" id="process-caption" role="status" aria-live="polite" aria-atomic="true">围绕骨架逐步加泥，修整脸部、双臂和衣褶。</p>
+  </div>
+  </div>
+  <section class="process-controls" aria-label="制作过程控制">
+  <div class="toolbar">
+    <div class="actions" aria-label="制作过程控制">
+      <button id="play-button" type="button" disabled=""><span class="play-width" aria-hidden="true"><svg class="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path class="play-symbol" d="M7 4v16l13-8Z"/><path class="pause-symbol" d="M8 5v14M16 5v14"/></svg><span>播放全过程</span></span><span><svg class="play-icon" id="play-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path class="play-symbol" d="M7 4v16l13-8Z"/><path class="pause-symbol" d="M8 5v14M16 5v14"/></svg><span id="play-label">播放全过程</span></span></button>
+      <button id="watch-original" type="button" aria-haspopup="dialog">欣赏原作</button>
+    </div>
+    <div class="view-controls"><div class="view-buttons"><button id="reset-view" type="button" disabled="">视角复位</button><button id="auto-rotate" type="button" aria-pressed="false" disabled="">自动旋转</button></div></div>
+  </div>
+  <progress class="visually-hidden" id="stage-progress" max="1" value="0" aria-label="当前步骤进度"></progress>
+  </section>
+  <details class="focus-menu"><summary>细看局部</summary><div class="focus-buttons" role="group" aria-label="雕塑局部"><button type="button" data-focus="whole" disabled="">完整雕塑</button><button type="button" data-focus="leaves" disabled="">树叶</button><button type="button" data-focus="hair" disabled="">发丝</button><button type="button" data-focus="bark" disabled="">树皮</button><button type="button" data-focus="roots" disabled="">树根</button></div></details>
+  <details class="process-notes">
+    <summary>本步工序说明</summary>
+    <p class="process-note" id="process-note">围绕骨架逐步加泥，修整脸部、双臂和衣褶。</p>
+    <p class="transfer-note" id="transfer-note" hidden="">① 石膏模型 → ② 大理石坯：在编号测点取深度，保持量规开口移到石坯，再标记对应深度。</p>
+  </details>
+  <details class="source-note">
+    <summary>模型与工艺说明</summary>
+    <p><a href="https://galleriaborghese.cultura.gov.it/en/archivio-schede/apollo-and-dafne/" target="_blank" rel="noopener noreferrer">《阿波罗与达芙妮》，吉安·洛伦佐·贝尼尼，1622–1625 年。原作藏于罗马博尔盖塞美术馆。</a></p>
+    <p>完成阶段使用 Scan the World 的原始网格。泥塑、石膏翻模、测点转移及去料动画均为教学重建示意，并非贝尼尼工作室的实录或精确工序记录。</p>
+    <p>模型： <a href="https://zenodo.org/records/21689297" target="_blank" rel="noopener noreferrer">Scan the World / Zenodo ↗</a> · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-NC-SA 4.0 ↗</a>。限非商业使用，改编作品须以相同许可共享。渲染：Three.js（MIT）和 Draco（Apache 2.0）。</p>
+  </details>
+</main>
+<dialog id="original-dialog" aria-labelledby="original-title">
+  <div class="video-heading"><h2 id="original-title">原作影像 · 绕行录屏</h2><button id="close-original" type="button">返回模型</button></div>
+  <video id="original-video" controls="" playsinline="" preload="none" poster="./assets/original-reference.jpg" aria-label="原作绕行录屏"></video>
+  <p id="video-message" role="status"></p>
+</dialog>
+
+
+</body></html>
