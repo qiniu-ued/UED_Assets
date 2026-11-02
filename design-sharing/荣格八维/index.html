@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>荣格八维：八种心理功能的认知体系</title>
+<style>
+:root{
+  --bg:#fbf7ef;
+  --card:#fffdf8;
+  --ink:#183a5b;
+  --text:#31465a;
+  --muted:#6f8292;
+  --line:#dde6e9;
+  --blue:#78a8cf;
+  --green:#8dab62;
+  --purple:#8b72c8;
+  --orange:#e89952;
+  --teal:#5fa6a1;
+  --pink:#df7e98;
+  --yellow:#e8b54d;
+  --shadow:0 12px 35px rgba(66,89,108,.07);
+  --radius:28px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;
+  background:
+    linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px),
+    var(--bg);
+  background-size:28px 28px;
+  color:var(--text);
+  line-height:1.65;
+}
+.page{
+  width:min(1180px,calc(100% - 32px));
+  margin:auto;
+  padding:72px 0 120px;
+  position:relative;
+  isolation:isolate;
+}
+.hero{
+  display:grid;
+  grid-template-columns:1fr;
+  align-items:center;
+  margin-bottom:92px;
+  min-height:470px;
+  position:relative;
+}
+.hero-copy{position:relative;z-index:2}
+.kicker{font-size:14px;letter-spacing:.16em;color:#8093a3}
+h1{
+  font-size:clamp(46px,7vw,86px);
+  line-height:1.04;
+  margin:10px 0 24px;
+  color:var(--ink);
+}
+.hero p{font-size:20px;max-width:1080px;margin:18px 0}
+.hero .hero-formula{font-size:21px;font-weight:700;color:var(--ink);padding:16px 22px;background:#eef3f5;border-radius:16px;max-width:1080px}
+.section{
+  margin:0 0 104px;
+}
+.section-head{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  margin-bottom:34px;
+}
+.no{
+  width:52px;height:52px;border-radius:18px;
+  display:grid;place-items:center;
+  background:var(--ink);color:white;font-weight:700;font-size:20px;
+}
+.section h2{margin:0;font-size:34px;color:var(--ink)}
+.lead{font-size:18px;color:var(--muted);margin:0 0 28px}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:28px;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:30px;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.card > *:not(.card-art){position:relative;z-index:1}
+.card-art{
+  position:absolute;
+  z-index:0;
+  width:178px;
+  height:auto;
+  right:-4px;
+  bottom:-4px;
+  opacity:.6;
+  pointer-events:none;
+  user-select:none;
+  mix-blend-mode:multiply;
+  filter:saturate(.9);
+  -webkit-mask-image:linear-gradient(to top,transparent 0,#000 34%,#000 100%);
+  mask-image:linear-gradient(to top,transparent 0,#000 34%,#000 100%);
+}
+.card-art.large{width:205px;opacity:.72}
+.card-art.left{right:auto;left:-4px;transform:scaleX(-1)}
+.card h3{
+  margin:0 0 10px;
+  font-size:24px;color:var(--ink);
+}
+.card p{margin:8px 0}
+.badge{
+  display:inline-flex;align-items:center;gap:10px;
+  font-size:14px;font-weight:700;
+  border-radius:999px;padding:7px 12px;
+  background:#f1f4f5;color:#5f7588;
+  margin-bottom:16px;
+}
+.function-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:32px;
+}
+.fn{
+  padding:0;
+  overflow:hidden;
+  min-height:470px;
+  background:linear-gradient(145deg,var(--fn-tint,#fffdf8),#fffdf9 72%);
+}
+.fn-ni{--fn-tint:#f5f0ff;--fn-accent:#7b66bd}
+.fn-ne{--fn-tint:#f4faec;--fn-accent:#79a34c}
+.fn-si{--fn-tint:#eef8ff;--fn-accent:#5b94c2}
+.fn-se{--fn-tint:#fff2ed;--fn-accent:#dd765f}
+.fn-ti{--fn-tint:#f4f0fb;--fn-accent:#8a70b1}
+.fn-te{--fn-tint:#edf9f8;--fn-accent:#3d9c98}
+.fn-fi{--fn-tint:#fff0f4;--fn-accent:#df718e}
+.fn-fe{--fn-tint:#fff8e9;--fn-accent:#e09a39}
+.fn-top{
+  padding:26px 28px 20px;
+  display:flex;align-items:center;gap:14px;
+  min-height:116px;
+}
+.fn-top > div:last-child{padding-right:142px;min-width:0}
+.fn-top > div:last-child > span{display:block;line-height:1.6}
+.fn-code{flex-shrink:0}
+.fn-code{
+  width:58px;height:58px;border-radius:18px;
+  display:grid;place-items:center;
+  font-size:24px;font-weight:800;color:white;
+}
+.fn-body{padding:0 28px 28px;position:relative;z-index:1}
+.fn-body h3{font-size:26px}
+.fn .card-art{width:190px;opacity:.42;right:-8px;bottom:-8px}
+.fn .duck-art{
+  width:142px;
+  top:10px;
+  right:14px;
+  bottom:auto;
+  opacity:.7;
+  border-radius:24px;
+  filter:saturate(.9) contrast(.96);
+  -webkit-mask-image:radial-gradient(ellipse at center,#000 58%,transparent 96%);
+  mask-image:radial-gradient(ellipse at center,#000 58%,transparent 96%);
+}
+.fn .key{max-width:none}
+.fn-lens{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 15px}
+.fn-lens span{
+  display:inline-flex;align-items:center;
+  min-height:32px;padding:5px 11px;border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--fn-accent) 24%,white);
+  background:rgba(255,255,255,.72);
+  color:var(--fn-accent);font-size:14px;font-weight:750;
+}
+.analogy{
+  margin:12px 0!important;
+  padding:12px 14px;
+  border-left:3px solid var(--fn-accent);
+  border-radius:0 12px 12px 0;
+  background:rgba(255,255,255,.62);
+}
+.signals{padding-right:0}
+.key{
+  font-weight:700;
+  margin-top:14px;
+}
+.diagram{
+  margin:22px 0 18px;
+  padding:12px 14px;
+  border-radius:22px;
+  border:1px solid #e8e1d7;
+  background:linear-gradient(145deg,#fffefa,#fffaf2);
+  min-height:180px;
+  display:flex;align-items:center;justify-content:center;gap:18px;
+  overflow:hidden;
+}
+.cog-reference{display:block;width:100%;height:auto;max-height:230px;object-fit:contain}
+.cog-svg{display:block;width:100%;height:auto;max-height:190px;overflow:visible}
+.cog-svg .node{stroke-width:3}
+.cog-svg .flow{fill:none;stroke-width:4;stroke-linecap:round;stroke-linejoin:round}
+.cog-svg .flow.thin{stroke-width:2.5}
+.cog-svg .dash{stroke-dasharray:8 8}
+.cog-svg .gate{rx:7;stroke-width:3}
+.cog-svg .soft{opacity:.28}
+.cog-svg text{font:700 13px "PingFang SC","Noto Sans SC",sans-serif;letter-spacing:.03em}
+.cog-svg .glow{filter:drop-shadow(0 4px 5px rgba(72,71,83,.14))}
+.dot{width:22px;height:22px;border-radius:50%;background:currentColor}
+.bar{width:18px;height:74px;border-radius:8px;background:currentColor;opacity:.78}
+.arrow{font-size:32px;font-weight:300;opacity:.7}
+.multi{display:flex;flex-wrap:wrap;gap:14px;max-width:260px;justify-content:center}
+.compare{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:26px;
+}
+.quote{
+  margin-top:22px;
+  background:#f6f1e8;border-left:5px solid #d8b26d;
+  padding:18px 22px;border-radius:0 18px 18px 0;
+}
+.stack{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:18px;
+}
+.stack .step{padding:24px;background:white;border:1px solid var(--line);border-radius:22px}
+.stack strong{display:block;color:var(--ink);font-size:18px;margin-bottom:6px}
+.mbti-overview{
+  display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:28px;align-items:center;
+  margin:30px 0;
+}
+.mbti-copy{padding:0 8px 0 0}
+.mbti-copy h3,.type-heading h3{margin:0 0 10px;color:var(--ink);font-size:24px}
+.mbti-copy p,.type-heading p{margin:0;color:var(--muted)}
+.axis-scroll{overflow-x:auto;border-radius:20px}
+.axis-matrix{
+  min-width:580px;
+  display:grid;grid-template-columns:110px repeat(4,1fr);
+  border:1px solid #d9e2e4;border-radius:20px;overflow:hidden;
+  background:rgba(255,255,255,.78);box-shadow:var(--shadow);
+}
+.axis-matrix > div{
+  min-height:66px;padding:12px 10px;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  border-right:1px solid #e3e8e9;border-bottom:1px solid #e3e8e9;
+}
+.axis-matrix > div:nth-child(5n){border-right:0}
+.axis-matrix > div:nth-last-child(-n+5){border-bottom:0}
+.axis-head{font-size:14px;font-weight:750;color:#698092;background:#f4f7f7}
+.axis-side{flex-direction:column;gap:4px;font-weight:800;color:var(--ink);background:#faf7f0}
+.axis-side small{display:block;margin-left:0;white-space:nowrap;color:var(--muted);font-weight:600}
+.axis-cell{flex-direction:column;gap:3px;font-size:25px;font-weight:850}
+.axis-cell small{display:block;margin-left:0;font-size:12px;color:var(--muted);font-weight:650}
+.role-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:0 0 42px}
+.role{
+  min-height:138px;padding:20px;
+  border:1px solid var(--line);border-top:4px solid var(--role-color);
+  border-radius:18px;background:rgba(255,255,255,.78);
+}
+.role strong{display:block;margin-bottom:7px;color:var(--ink);font-size:17px}
+.role span{display:block;color:var(--muted);font-size:14px;line-height:1.55}
+.type-heading{display:flex;justify-content:space-between;gap:24px;align-items:end;margin-bottom:20px}
+.type-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.type-legend span{padding:6px 9px;border-radius:999px;background:#eef3f5;color:#607587;font-size:12px;font-weight:700}
+.type-groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+.type-group{
+  --group:#789a5a;
+  overflow:hidden;border:1px solid color-mix(in srgb,var(--group) 30%,white);
+  border-radius:20px;background:rgba(255,255,255,.82);box-shadow:var(--shadow);
+}
+.type-group.sp{--group:#83a94f}.type-group.nf{--group:#d87d91}.type-group.nt{--group:#6799c5}
+.type-group h4{
+  margin:0;padding:14px 18px;background:color-mix(in srgb,var(--group) 13%,white);
+  color:var(--group);font-size:20px;
+}
+.type-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.type-table th,.type-table td{padding:11px 8px;text-align:center;border-top:1px solid #e6ebec}
+.type-table th{font-size:12px;color:#728493;background:#fbfcfc}
+.type-table td:first-child{color:var(--ink);font-weight:850;letter-spacing:.04em}
+.func{font-size:17px;font-weight:850}
+.si{color:#d4a52e}.se{color:#d97056}.ni{color:#759f4c}.ne{color:#5b9b4d}
+.fi{color:#df6f8b}.fe{color:#e07d3d}.ti{color:#7864b3}.te{color:#397db7}
+.type-example{
+  margin-top:28px;padding:24px 26px;
+  border-left:5px solid #d77a8e;border-radius:0 20px 20px 0;
+  background:#fff4f6;
+}
+.type-example h3{margin:0 0 8px;color:var(--ink);font-size:22px}
+.type-example > p{margin:0 0 18px;color:var(--muted)}
+.example-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.example-step{padding:15px;border-radius:14px;background:rgba(255,255,255,.82);border:1px solid #f0dce1}
+.example-step b{display:block;margin-bottom:5px;color:var(--ink)}
+.example-step span{font-size:14px;color:var(--muted)}
+.pills{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}
+.pill{padding:10px 14px;border-radius:999px;background:#eef3f5;color:#536b7c}
+.note{
+  padding:28px 30px;border-radius:28px;background:#eef4f6;border:1px solid #dce6e9;
+}
+.footer{
+  min-height:300px;
+  padding:48px 430px 48px 48px;
+  border-radius:34px;
+  background:#fff8ec;
+  color:var(--text);
+  border:1px solid #ecd9bd;
+  box-shadow:var(--shadow);
+  position:relative;
+  overflow:hidden;
+}
+.footer h2{font-size:36px;color:var(--ink);margin-top:0;position:relative;z-index:2}
+.footer p{font-size:18px;max-width:860px;margin-bottom:0;color:var(--text);position:relative;z-index:2}
+.footer-art{
+  position:absolute;
+  right:-18px;
+  bottom:-2px;
+  width:430px;
+  max-width:46%;
+  mix-blend-mode:multiply;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 20%,#000 100%);
+  mask-image:linear-gradient(90deg,transparent 0,#000 20%,#000 100%);
+}
+.small{font-size:14px;color:var(--muted)}
+@media(max-width:820px){
+  .hero,.grid,.function-grid,.compare{grid-template-columns:1fr}
+  .stack,.role-grid{grid-template-columns:1fr 1fr}
+  .mbti-overview,.type-groups{grid-template-columns:1fr}
+  .type-heading{align-items:flex-start;flex-direction:column}
+  .type-legend{justify-content:flex-start}
+  .example-flow{grid-template-columns:1fr 1fr}
+  .page{padding-top:36px}
+  .section{margin-bottom:76px}
+  .hero{gap:30px;min-height:0}
+  .fn{min-height:440px}
+  .footer{padding:36px 34px 260px;min-height:520px}
+  .footer-art{width:390px;max-width:92%}
+}
+@media(max-width:520px){
+  h1{font-size:44px}
+  .page{width:min(100% - 22px,1180px)}
+  .stack,.role-grid,.example-flow{grid-template-columns:1fr}
+  .axis-matrix{min-width:540px}
+  .type-table th,.type-table td{padding:10px 4px}
+  .section h2{font-size:27px}
+  .section-head{align-items:flex-start;gap:12px}
+  .no{width:44px;height:44px;border-radius:14px;flex:0 0 44px}
+  .card{padding:24px}
+  .fn{min-height:430px}
+  .fn-top{padding:22px 22px 16px;align-items:flex-start}
+  .fn-top > div:last-child{padding-right:96px}
+  .fn-body{padding:0 22px 24px}
+  .fn .card-art{width:155px;opacity:.3}
+  .fn .duck-art{width:108px;right:8px;top:10px;opacity:.62}
+  .signals{padding-right:0}
+  .footer{padding:32px 26px 230px;min-height:520px}
+  .footer h2{font-size:30px}
+}
+</style>
+</head>
+<body>
+<main class="page">
+
+<section class="hero">
+  <div class="hero-copy">
+    <div class="kicker">JUNG COGNITIVE FUNCTIONS · SELF EXPLORATION</div>
+    <h1>荣格八维<br>理解认知的八种方式</h1>
+    <p>人的心理活动包含感知信息、理解经验，以及基于信息形成判断的过程。荣格八维提供了一套描述这些心理活动的理论语言，帮助我们观察自己如何认识世界、组织信息和作出选择。</p>
+    <p class="hero-formula">4 种心理功能（S / N / T / F） × 2 种心理态度（e / i）＝ 8 种心理功能</p>
+    <p>这一框架源于荣格的《心理类型》，并影响了后续 MBTI 类型理论的发展。理解八维，可以先认识感知与判断，再理解内倾与外倾，最后观察功能之间如何配合。同一种类型的人，也会因经历、环境及功能发展而呈现不同的样子。</p>
+    <div class="pills">
+      <span class="pill">认知功能</span><span class="pill">MBTI</span><span class="pill">自我观察</span><span class="pill">信息处理方式</span>
+    </div>
+  </div>
+
+</section>
+
+<section class="section">
+  <div class="section-head"><div class="no">01</div><h2>心理活动的两项基本任务</h2></div>
+  <p class="lead">荣格将四种基本功能分为感知与判断两类：前者让信息进入意识，后者依据逻辑或价值标准形成评价。</p>
+  <div class="grid">
+    <article class="card">
+      <div class="badge">PERCEIVING · 信息获取</div>
+      <h3>我怎样接收和理解信息？</h3>
+      <p><b>感觉 S</b> 感知事物的具体属性、现实状态与感官体验；<b>直觉 N</b> 感知潜在联系、意义与发展可能性。</p>
+    </article>
+    <article class="card">
+      <div class="badge">JUDGING · 判断决策</div>
+      <h3>我怎样评价信息并做决定？</h3>
+      <p><b>思维 T</b> 依据概念、因果与逻辑原则形成判断；<b>情感 F</b> 依据价值标准评价事物的重要性与认同程度。情感在这里指价值判断功能。</p>
+    </article>
+  </div>
+  <div class="quote">原著中的“理性功能”指通过评价形成判断的 T 与 F；“非理性功能”指直接感知信息的 S 与 N。这一区分描述心理过程，不表示聪明程度或判断好坏。</div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div class="no">02</div><h2>心理态度：外倾与内倾</h2></div>
+  <p class="lead">内外倾描述心理活动的主要参照方向，不能只用社交是否活跃来判断。</p>
+  <div class="grid">
+    <div class="card"><h3>外倾 e · 参照外部对象</h3><p>以外部对象、客观情境与社会环境作为重要参照，关注对象的特征、现实变化，以及环境提供的信息与判断依据。</p></div>
+    <div class="card"><h3>内倾 i · 参照内部经验</h3><p>以主体内部的经验、意象或判断标准作为重要参照，关注外部信息在个人心理经验中呈现的形式与意义。</p></div>
+  </div>
+  <div class="mbti-overview">
+    <div class="mbti-copy">
+      <h3>四种功能 × 两种态度</h3>
+      <p>小写 e / i 表示功能的心理态度，如 Se、Si；MBTI 类型代码使用大写 E / I。每种基本功能都可以分别以内倾或外倾方式表现。</p>
+    </div>
+    <div class="axis-scroll" aria-label="八维认知功能基础矩阵">
+      <div class="axis-matrix">
+        <div class="axis-head">参照方向</div>
+        <div class="axis-head">感觉 S<br>具体经验</div>
+        <div class="axis-head">直觉 N<br>模式可能</div>
+        <div class="axis-head">情感 F<br>价值关系</div>
+        <div class="axis-head">思维 T<br>逻辑规则</div>
+
+        <div class="axis-side">内倾 I<small>向内参照</small></div>
+        <div class="axis-cell si">Si<small>内倾感觉</small></div>
+        <div class="axis-cell ni">Ni<small>内倾直觉</small></div>
+        <div class="axis-cell fi">Fi<small>内倾情感</small></div>
+        <div class="axis-cell ti">Ti<small>内倾思维</small></div>
+
+        <div class="axis-side">外倾 E<small>向外参照</small></div>
+        <div class="axis-cell se">Se<small>外倾感觉</small></div>
+        <div class="axis-cell ne">Ne<small>外倾直觉</small></div>
+        <div class="axis-cell fe">Fe<small>外倾情感</small></div>
+        <div class="axis-cell te">Te<small>外倾思维</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div class="no">03</div><h2>八种心理功能：参照方式与认知机制</h2></div>
+
+  <p class="lead">按感觉、直觉、思维、情感四组阅读。每组共享基本功能，差别在于主要参照外部对象，还是内部经验。图示帮助理解，具体含义以文字说明为准。</p>
+  <div class="function-grid">
+
+    <article class="card fn fn-se">
+      <div class="fn-top"><div class="fn-code" style="background:var(--orange)">Se</div><div><h3>外倾感觉</h3><span>感知外化，专注于当下的感官体验和现实刺激。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--orange)">
+          <img class="cog-reference" src="assets/diagrams/se-reference.png" alt="Se 直接读取当下现实" width="395" height="136">
+        </div>
+        <div class="fn-lens"><span>感官现实</span><span>此刻感知到什么？</span></div>
+        <p><b>核心问题：</b>外部世界此刻呈现了什么？</p>
+        <p class="analogy"><b>认知方式：</b>直接关注外部环境的感官刺激、物理属性与具体变化，通过视觉、听觉、触觉等信息持续更新对当前情境的感知。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-se.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-si">
+      <div class="fn-top"><div class="fn-code" style="background:var(--blue)">Si</div><div><h3>内倾感觉</h3><span>感知内化，依赖过去经验和记忆处理当下信息。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--blue)">
+          <img class="cog-reference" src="assets/diagrams/si-reference.png" alt="Si 根据已有信息校正当前体验" width="374" height="150">
+        </div>
+        <div class="fn-lens"><span>感官印象</span><span>体验唤起了什么？</span></div>
+        <p><b>核心问题：</b>当前感官体验在我的内部经验中呈现出什么？</p>
+        <p class="analogy"><b>认知方式：</b>关注外部刺激在内部形成的主观感官体验，并将当前知觉与既有感官印象联系起来，体会其中的熟悉感、差异感与个人意义。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-si.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-ne">
+      <div class="fn-top"><div class="fn-code" style="background:var(--green)">Ne</div><div><h3>外倾直觉</h3><span>直觉外化，热衷于探索外部世界的可能性和关联。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--green)">
+          <img class="cog-reference" src="assets/diagrams/ne-reference.png" alt="Ne 从一个起点发散出多种可能" width="423" height="175">
+        </div>
+        <div class="fn-lens"><span>潜在联系</span><span>还可能如何发展？</span></div>
+        <p><b>核心问题：</b>当前事物还可能产生哪些新的联系与发展方向？</p>
+        <p class="analogy"><b>认知方式：</b>从外部事物、概念和情境中识别尚未显现的联系；一个线索引发多个设想，不同设想又连接出新的可能性。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-ne.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-ni">
+      <div class="fn-top"><div class="fn-code" style="background:var(--purple)">Ni</div><div><h3>内倾直觉</h3><span>直觉内化，专注于内在的抽象模式和未来趋势。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--purple)">
+          <img class="cog-reference" src="assets/diagrams/ni-reference.png" alt="Ni 从多个线索收束到核心趋势" width="405" height="140">
+        </div>
+        <div class="fn-lens"><span>深层联系</span><span>呈现了怎样的意义？</span></div>
+        <p><b>核心问题：</b>这些信息在更深层次上呈现出怎样的模式与意义？</p>
+        <p class="analogy"><b>认知方式：</b>以内部意象、象征与潜在关联组织经验，逐渐形成对主题、深层模式或发展方向的整体理解；形成过程有时难以逐步描述。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-ni.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-te">
+      <div class="fn-top"><div class="fn-code" style="background:var(--teal)">Te</div><div><h3>外倾思维</h3><span>逻辑外化，注重客观规则、效率和结构化。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--teal)">
+          <img class="cog-reference" src="assets/diagrams/te-reference.png" alt="Te 用现实可行性解决问题" width="446" height="186">
+        </div>
+        <div class="fn-lens"><span>外部标准</span><span>什么方法能够成立？</span></div>
+        <p><b>核心问题：</b>依据外部事实与客观标准，什么判断或方法能够成立？</p>
+        <p class="analogy"><b>认知方式：</b>依据可观察事实、明确标准与现实条件组织判断，通过程序、分类和评价体系，梳理目标、资源、流程与结果的关系。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-te.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-ti">
+      <div class="fn-top"><div class="fn-code" style="background:#6c64a9">Ti</div><div><h3>内倾思维</h3><span>逻辑内化，专注于内在的逻辑体系和理论推导。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:#6c64a9">
+          <img class="cog-reference" src="assets/diagrams/ti-reference.png" alt="Ti 通过内部逻辑分析得出结论" width="362" height="148">
+        </div>
+        <div class="fn-lens"><span>内部逻辑</span><span>推理如何成立？</span></div>
+        <p><b>核心问题：</b>这一概念或判断在内部逻辑上如何成立？</p>
+        <p class="analogy"><b>认知方式：</b>通过概念分析、关系辨析与逻辑推演建立理解模型，澄清定义和前提，并检验推理及结论之间是否一致。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-ti.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-fe">
+      <div class="fn-top"><div class="fn-code" style="background:var(--yellow)">Fe</div><div><h3>外倾情感</h3><span>情感外化，关注外部人际关系的和谐与他人感受。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:#cf9228">
+          <img class="cog-reference" src="assets/diagrams/fe-reference.png" alt="Fe 通过群体互动协调关系" width="430" height="208">
+        </div>
+        <div class="fn-lens"><span>共同价值</span><span>关系中什么更合适？</span></div>
+        <p><b>核心问题：</b>这一事物在当前关系与共同价值中具有怎样的意义？</p>
+        <p class="analogy"><b>认知方式：</b>理解人际关系、社会规范与群体共享的价值期待，评价行为在具体关系中的适宜性，并协调不同人的需求与表达。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-fe.png" alt="" aria-hidden="true">
+    </article>
+
+    <article class="card fn fn-fi">
+      <div class="fn-top"><div class="fn-code" style="background:var(--pink)">Fi</div><div><h3>内倾情感</h3><span>情感内化，基于内在价值观和自我认同做判断。</span></div></div>
+      <div class="fn-body">
+        <div class="diagram" style="color:var(--pink)">
+          <img class="cog-reference" src="assets/diagrams/fi-reference.png" alt="Fi 用真实感受反复评估价值" width="364" height="197">
+        </div>
+        <div class="fn-lens"><span>内部价值</span><span>我认同什么？</span></div>
+        <p><b>核心问题：</b>这一事物与我的内在价值标准具有怎样的关系？</p>
+        <p class="analogy"><b>认知方式：</b>依据内部形成的价值尺度评价事物，通过细致的情感区分与个人信念，确定什么具有重要意义、值得认同和坚持。</p>
+      </div>
+      <img class="card-art duck-art" src="assets/illustrations/duck-fi.png" alt="" aria-hidden="true">
+    </article>
+  </div>
+</section>
+
+<section class="section">
+  <div class="section-head"><div class="no">04</div><h2>四组功能的关系</h2></div>
+  <div class="compare">
+    <div class="card"><h3>Se vs Si</h3><p><b>Se</b> 主要参照外部对象的实际感官属性；<b>Si</b> 主要参照刺激在内部形成的感官印象。两者体现现实感知的不同取向。</p></div>
+    <div class="card"><h3>Ne vs Ni</h3><p><b>Ne</b> 关注外部事物中的潜在可能性；<b>Ni</b> 关注内部意象联系与深层意义。“发散与整合”是帮助理解的概括。</p></div>
+    <div class="card"><h3>Te vs Ti</h3><p><b>Te</b> 主要参照外部事实与可共享的逻辑标准；<b>Ti</b> 主要参照内部概念结构与逻辑一致性。两者都使用逻辑判断。</p></div>
+    <div class="card"><h3>Fe vs Fi</h3><p><b>Fe</b> 主要参照外部关系与共同价值；<b>Fi</b> 主要参照内部价值体系与个人认同。两者都参与价值评价。</p></div>
+  </div>
+</section>
+
+<section class="section" id="mbti-function-stack">
+  <div class="section-head"><div class="no">05</div><h2>八维功能与 MBTI 功能栈</h2></div>
+  <p class="lead">布里格斯与迈尔斯在荣格理论基础上发展了 MBTI。E / I、S / N、T / F、J / P 四组偏好的组合形成 16 种类型；现代类型动力学再以功能栈描述各类型的功能组织关系。</p>
+
+
+  <div class="role-grid" aria-label="功能栈四个位置">
+    <div class="role" style="--role-color:#6f9f55"><strong>1 主导功能</strong><span>意识活动中相对稳定、经常使用的心理组织方式。</span></div>
+    <div class="role" style="--role-color:#5796bd"><strong>2 辅助功能</strong><span>支持并平衡主导功能，使感知与判断两类过程相互补充。</span></div>
+    <div class="role" style="--role-color:#d69c3e"><strong>3 第三功能</strong><span>常见四功能模型中的第三顺位，其参与方式随经验与发展而变化。</span></div>
+    <div class="role" style="--role-color:#d67482"><strong>4 劣势功能</strong><span>与主导功能形成对立关系，通常意识分化程度较低，也是需要逐渐理解的心理部分。</span></div>
+  </div>
+
+  <div class="type-heading">
+    <div><h3>16 型人格功能栈对照</h3><p>以下采用常见四功能模型，从左到右为主导、辅助、第三与劣势。不同研究者对第三功能及非偏好功能的解释可能存在差异。</p></div>
+    <div class="type-legend"><span>1 主导</span><span>2 辅助</span><span>3 第三</span><span>4 劣势</span></div>
+  </div>
+
+  <div class="type-groups">
+    <div class="type-group sj">
+      <h4>SJ 组 · 经验与秩序</h4>
+      <table class="type-table">
+        <thead><tr><th>类型</th><th>主导</th><th>辅助</th><th>第三</th><th>劣势</th></tr></thead>
+        <tbody>
+          <tr><td>ISTJ</td><td><span class="func si">Si</span></td><td><span class="func te">Te</span></td><td><span class="func fi">Fi</span></td><td><span class="func ne">Ne</span></td></tr>
+          <tr><td>ISFJ</td><td><span class="func si">Si</span></td><td><span class="func fe">Fe</span></td><td><span class="func ti">Ti</span></td><td><span class="func ne">Ne</span></td></tr>
+          <tr><td>ESTJ</td><td><span class="func te">Te</span></td><td><span class="func si">Si</span></td><td><span class="func ne">Ne</span></td><td><span class="func fi">Fi</span></td></tr>
+          <tr><td>ESFJ</td><td><span class="func fe">Fe</span></td><td><span class="func si">Si</span></td><td><span class="func ne">Ne</span></td><td><span class="func ti">Ti</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="type-group sp">
+      <h4>SP 组 · 体验与应变</h4>
+      <table class="type-table">
+        <thead><tr><th>类型</th><th>主导</th><th>辅助</th><th>第三</th><th>劣势</th></tr></thead>
+        <tbody>
+          <tr><td>ISTP</td><td><span class="func ti">Ti</span></td><td><span class="func se">Se</span></td><td><span class="func ni">Ni</span></td><td><span class="func fe">Fe</span></td></tr>
+          <tr><td>ISFP</td><td><span class="func fi">Fi</span></td><td><span class="func se">Se</span></td><td><span class="func ni">Ni</span></td><td><span class="func te">Te</span></td></tr>
+          <tr><td>ESTP</td><td><span class="func se">Se</span></td><td><span class="func ti">Ti</span></td><td><span class="func fe">Fe</span></td><td><span class="func ni">Ni</span></td></tr>
+          <tr><td>ESFP</td><td><span class="func se">Se</span></td><td><span class="func fi">Fi</span></td><td><span class="func te">Te</span></td><td><span class="func ni">Ni</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="type-group nf">
+      <h4>NF 组 · 意义与成长</h4>
+      <table class="type-table">
+        <thead><tr><th>类型</th><th>主导</th><th>辅助</th><th>第三</th><th>劣势</th></tr></thead>
+        <tbody>
+          <tr><td>INFJ</td><td><span class="func ni">Ni</span></td><td><span class="func fe">Fe</span></td><td><span class="func ti">Ti</span></td><td><span class="func se">Se</span></td></tr>
+          <tr><td>INFP</td><td><span class="func fi">Fi</span></td><td><span class="func ne">Ne</span></td><td><span class="func si">Si</span></td><td><span class="func te">Te</span></td></tr>
+          <tr><td>ENFJ</td><td><span class="func fe">Fe</span></td><td><span class="func ni">Ni</span></td><td><span class="func se">Se</span></td><td><span class="func ti">Ti</span></td></tr>
+          <tr><td>ENFP</td><td><span class="func ne">Ne</span></td><td><span class="func fi">Fi</span></td><td><span class="func te">Te</span></td><td><span class="func si">Si</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="type-group nt">
+      <h4>NT 组 · 系统与创新</h4>
+      <table class="type-table">
+        <thead><tr><th>类型</th><th>主导</th><th>辅助</th><th>第三</th><th>劣势</th></tr></thead>
+        <tbody>
+          <tr><td>INTJ</td><td><span class="func ni">Ni</span></td><td><span class="func te">Te</span></td><td><span class="func fi">Fi</span></td><td><span class="func se">Se</span></td></tr>
+          <tr><td>INTP</td><td><span class="func ti">Ti</span></td><td><span class="func ne">Ne</span></td><td><span class="func si">Si</span></td><td><span class="func fe">Fe</span></td></tr>
+          <tr><td>ENTJ</td><td><span class="func te">Te</span></td><td><span class="func ni">Ni</span></td><td><span class="func se">Se</span></td><td><span class="func fi">Fi</span></td></tr>
+          <tr><td>ENTP</td><td><span class="func ne">Ne</span></td><td><span class="func ti">Ti</span></td><td><span class="func fe">Fe</span></td><td><span class="func si">Si</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="type-example">
+    <h3>以 INFP 为例：Fi → Ne → Si → Te</h3>
+    <p>以下说明各功能在模型中的角色，不表示每次思考都会依次经过四个步骤。</p>
+    <div class="example-flow">
+      <div class="example-step"><b><span class="func fi">Fi</span> · 主导</b><span>先从内在价值与真实感受出发，确认什么值得坚持。</span></div>
+      <div class="example-step"><b><span class="func ne">Ne</span> · 辅助</b><span>向外探索更多可能，为价值与理想寻找新的表达方式。</span></div>
+      <div class="example-step"><b><span class="func si">Si</span> · 第三</b><span>保留过去经验与感受记忆，为当下选择提供熟悉的参照。</span></div>
+      <div class="example-step"><b><span class="func te">Te</span> · 劣势</b><span>在成长中学习设定目标、组织步骤，让重视的事情真正落地。</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="note"><b>理论定位：</b>八维适合作为自我反思、理解差异与沟通协作的概念框架。对于八种功能是否构成独立、稳定且可测量的认知机制，以及固定功能排序的实证支持，仍缺乏一致结论。理解个人时，还需结合实际行为、成长经历与环境。</div>
+</section>
+
+<section class="footer">
+  <h2>理解八维，不是为了给自己贴标签。</h2>
+  <p>从感知与判断出发，认识感觉、直觉、思维与情感，再理解内倾与外倾的参照方向。把这套语言带回真实经历，观察不同认知方式如何参与理解、选择与协作。</p>
+  <img class="footer-art" src="assets/illustrations/footer-girl-cat.png" alt="" aria-hidden="true">
+</section>
+
+</main>
+</body>
+</html>
