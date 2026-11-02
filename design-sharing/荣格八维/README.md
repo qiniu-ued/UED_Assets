@@ -2,8 +2,8 @@
 
 介绍荣格八种心理功能的基本框架，梳理感知与判断、内外倾态度、八种功能的认知方式，以及它们与 MBTI 功能栈的关系，帮助团队理解认知偏好和沟通差异。
 
-- 分享人：hejiaping-pipi
-- 分享日期：待补充
+- 分享人：何嘉萍
+- 分享日期：2026-10-29
 - 归档日期：2026-11-02
 - 正式预览：[荣格八维](https://qiniu-ued.github.io/UED_Assets/design-sharing/荣格八维/index.html)
 - 本地阅读：使用浏览器打开 [index.html](index.html)，保留同级 `assets/` 目录。
